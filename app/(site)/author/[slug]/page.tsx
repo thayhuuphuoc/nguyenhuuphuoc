@@ -8,12 +8,13 @@ import { draftMode } from "next/headers"
 import type { Metadata } from "next"
 
 type Props = {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params
   const { isEnabled } = await draftMode()
-  const author = await getAuthorBySlug(params.slug, isEnabled)
+  const author = await getAuthorBySlug(slug, isEnabled)
 
   if (!author) {
     return {
@@ -28,14 +29,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function AuthorProfilePage({ params }: Props) {
+  const { slug } = await params
   const { isEnabled } = await draftMode()
-  const author = await getAuthorBySlug(params.slug, isEnabled)
+  const author = await getAuthorBySlug(slug, isEnabled)
 
   if (!author) {
     notFound()
   }
 
-  const posts = await getAuthorPosts(params.slug, isEnabled)
+  const posts = await getAuthorPosts(slug, isEnabled)
 
   return (
     <div className="container mx-auto px-4 py-12">

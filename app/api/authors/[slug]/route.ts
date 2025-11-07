@@ -1,9 +1,10 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { getAuthorBySlug } from "@/lib/sanity"
 
-export async function GET(request: NextRequest, { params }: { params: { slug: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
   try {
-    const author = await getAuthorBySlug(params.slug)
+    const { slug } = await params
+    const author = await getAuthorBySlug(slug)
 
     if (!author) {
       return NextResponse.json({ error: "Author not found" }, { status: 404 })

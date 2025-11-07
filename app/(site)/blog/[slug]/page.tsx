@@ -10,7 +10,7 @@ import type { Metadata } from "next"
 import { portableTextComponents } from "@/lib/portable-text-components"
 
 type Props = {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
 }
 
 export async function generateStaticParams() {
@@ -21,8 +21,9 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params
   const { isEnabled } = await draftMode()
-  const post = await getPostBySlug(params.slug, isEnabled)
+  const post = await getPostBySlug(slug, isEnabled)
 
   if (!post) {
     return {
@@ -49,8 +50,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function BlogPostPage({ params }: Props) {
+  const { slug } = await params
   const { isEnabled } = await draftMode()
-  const post = await getPostBySlug(params.slug, isEnabled)
+  const post = await getPostBySlug(slug, isEnabled)
 
   if (!post) {
     notFound()
