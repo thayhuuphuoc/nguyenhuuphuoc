@@ -368,7 +368,23 @@ export default function BlogForgePage() {
   )
 }
 
-function ArticleCard({ article, featured = false }) {
+type Article = {
+  id: number
+  title: string
+  category: string
+  image: string
+  views: number
+  comments: number
+  date: string
+  readTime?: string
+}
+
+type ArticleCardProps = {
+  article: Article
+  featured?: boolean
+}
+
+function ArticleCard({ article, featured = false }: ArticleCardProps) {
   return (
     <div className={`group cursor-pointer rounded-lg overflow-hidden ${featured ? "md:col-span-1" : ""}`}>
       <div
