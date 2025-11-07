@@ -5,7 +5,7 @@ import { schemaTypes } from "./schemaTypes"
 
 export default defineConfig({
   name: "default",
-  title: "BlogForge",
+  title: "Nguyen Huu Phuoc",
 
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "",
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || "production",

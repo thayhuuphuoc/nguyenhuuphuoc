@@ -7,8 +7,8 @@ import { draftMode } from "next/headers"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Home - BlogForge",
-  description: "Discover the latest articles and insights from our community",
+  title: "Home - Nguyen Huu Phuoc",
+  description: "Discover the latest articles and insights from Nguyen Huu Phuoc",
 }
 
 async function getData() {
@@ -29,10 +29,10 @@ export default async function HomePage() {
       {/* Hero Section */}
       <section className="text-center mb-16">
         <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          Welcome to BlogForge
+          Welcome to My Blog
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Discover insights, stories, and expertise from our community of writers and creators
+          Discover insights, stories, and expertise from my personal blog
         </p>
       </section>
 

@@ -28,9 +28,10 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <nav className="container mx-auto flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition">
-            <span className="font-bold text-lg">BLOG</span>
-            <span className="bg-orange-500 text-white px-2 py-1 text-xs font-bold rounded">FORGE</span>
+          <Link href="/" className="flex items-center gap-1.5 hover:opacity-80 transition">
+            <span className="font-bold text-sm md:text-base tracking-tight">NGUYEN</span>
+            <span className="font-bold text-sm md:text-base tracking-tight text-orange-500">HUU</span>
+            <span className="bg-orange-500 text-white px-2 py-1 text-xs font-bold rounded">PHUOC</span>
           </Link>
 
           {/* Desktop Navigation */}

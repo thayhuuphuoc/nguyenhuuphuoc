@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: `${author.name} - BlogForge`,
+    title: `${author.name} - Nguyen Huu Phuoc`,
     description: author.bio || `Articles by ${author.name}`,
   }
 }

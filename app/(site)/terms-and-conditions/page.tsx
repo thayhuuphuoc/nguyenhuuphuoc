@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Terms and Conditions - BlogForge",
-  description: "Terms and Conditions for BlogForge",
+  title: "Terms and Conditions - Nguyen Huu Phuoc",
+  description: "Terms and Conditions for Nguyen Huu Phuoc",
 }
 
 export default function TermsAndConditionsPage() {
@@ -15,7 +15,7 @@ export default function TermsAndConditionsPage() {
         <section>
           <h2>Agreement to Terms</h2>
           <p>
-            By accessing or using BlogForge, you agree to be bound by these Terms and Conditions.
+            By accessing or using this website, you agree to be bound by these Terms and Conditions.
             If you disagree with any part of these terms, then you may not access the service.
           </p>
         </section>
@@ -23,14 +23,14 @@ export default function TermsAndConditionsPage() {
         <section>
           <h2>Use License</h2>
           <p>
-            Permission is granted to temporarily download one copy of the materials on BlogForge for
+            Permission is granted to temporarily download one copy of the materials on this website for
             personal, non-commercial transitory viewing only. This is the grant of a license, not a
             transfer of title, and under this license you may not:
           </p>
           <ul>
             <li>Modify or copy the materials</li>
             <li>Use the materials for any commercial purpose or for any public display</li>
-            <li>Attempt to reverse engineer any software contained on BlogForge</li>
+                <li>Attempt to reverse engineer any software contained on this website</li>
             <li>Remove any copyright or other proprietary notations from the materials</li>
           </ul>
         </section>
@@ -76,7 +76,7 @@ export default function TermsAndConditionsPage() {
         <section>
           <h2>Disclaimer</h2>
           <p>
-            The materials on BlogForge are provided on an 'as is' basis. BlogForge makes no
+            The materials on this website are provided on an 'as is' basis. This website makes no
             warranties, expressed or implied, and hereby disclaims and negates all other warranties
             including, without limitation, implied warranties or conditions of merchantability,
             fitness for a particular purpose, or non-infringement of intellectual property or other

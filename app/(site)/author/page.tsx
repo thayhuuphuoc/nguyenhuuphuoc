@@ -5,8 +5,8 @@ import { draftMode } from "next/headers"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Authors - BlogForge",
-  description: "Meet the talented writers behind BlogForge",
+  title: "Authors - Nguyen Huu Phuoc",
+  description: "Meet the authors",
 }
 
 export default async function AuthorsPage() {
@@ -17,8 +17,8 @@ export default async function AuthorsPage() {
     <div className="container mx-auto px-4 py-12">
       {/* Hero Section */}
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4">Our Authors</h1>
-        <p className="text-muted-foreground text-lg">Meet the talented writers behind BlogForge</p>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4">Authors</h1>
+        <p className="text-muted-foreground text-lg">Meet the authors</p>
       </section>
 
       {/* Authors Grid */}

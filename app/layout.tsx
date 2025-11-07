@@ -11,14 +11,14 @@ import "./globals.css"
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 
 export const metadata: Metadata = {
-  title: "BlogForge - Modern Blogging Platform",
-  description: "A modern, feature-rich blogging platform built with Next.js, React, and Sanity CMS",
-  keywords: ["blog", "cms", "nextjs", "sanity", "react"],
-  authors: [{ name: "BlogForge Team" }],
+  title: "Nguyen Huu Phuoc - Personal Blog",
+  description: "Personal blog of Nguyen Huu Phuoc - Sharing insights, stories, and expertise",
+  keywords: ["blog", "nguyen huu phuoc", "personal blog", "nextjs", "sanity"],
+  authors: [{ name: "Nguyen Huu Phuoc" }],
   openGraph: {
     type: "website",
     locale: "en_US",
-    siteName: "BlogForge",
+    siteName: "Nguyen Huu Phuoc",
   },
 }
 

@@ -9,8 +9,8 @@ import type { Metadata } from "next"
 import BlogSearch from "@/components/blog-search"
 
 export const metadata: Metadata = {
-  title: "Blog - BlogForge",
-  description: "Browse all our articles and discover new insights",
+  title: "Blog - Nguyen Huu Phuoc",
+  description: "Browse all articles and discover new insights from Nguyen Huu Phuoc",
 }
 
 async function getData(searchParams: { category?: string; search?: string }) {

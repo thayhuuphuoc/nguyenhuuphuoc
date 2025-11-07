@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Privacy Policy - BlogForge",
-  description: "Privacy Policy for BlogForge",
+  title: "Privacy Policy - Nguyen Huu Phuoc",
+  description: "Privacy Policy for Nguyen Huu Phuoc",
 }
 
 export default function PrivacyPolicyPage() {
@@ -15,7 +15,7 @@ export default function PrivacyPolicyPage() {
         <section>
           <h2>Introduction</h2>
           <p>
-            Welcome to BlogForge. We respect your privacy and are committed to protecting your
+            Welcome to this website. We respect your privacy and are committed to protecting your
             personal data. This privacy policy will inform you about how we look after your
             personal data when you visit our website and tell you about your privacy rights and how
             the law protects you.
