@@ -236,6 +236,25 @@ Sau khi thêm tất cả environment variables:
    - **Project ID**: Copy giá trị này → dùng cho `NEXT_PUBLIC_SANITY_PROJECT_ID`
    - **Dataset**: Thường là `production` → dùng cho `NEXT_PUBLIC_SANITY_DATASET`
 
+**⚠️ QUAN TRỌNG: Nếu gặp lỗi "Dataset not found":**
+
+Có 2 cách khắc phục:
+
+#### Cách 1: Tạo Dataset mới trong Sanity (Khuyến nghị)
+
+1. Vào **Sanity Studio** của project
+2. Click vào **"Datasets"** ở thanh sidebar bên trái (hoặc vào Project Settings → Datasets)
+3. Click **"Add dataset"**
+4. Nhập tên dataset (ví dụ: `myblog`, `production`)
+5. Chọn **"Production"** hoặc **"Development"** 
+6. Click **"Create"**
+7. Cập nhật environment variable `NEXT_PUBLIC_SANITY_DATASET` trong Vercel với tên dataset vừa tạo
+
+#### Cách 2: Sử dụng Dataset mặc định "production"
+
+1. Nếu dataset mặc định `production` đã tồn tại, chỉ cần đảm bảo environment variable `NEXT_PUBLIC_SANITY_DATASET` được set là `production`
+2. Hoặc không set biến này, code sẽ tự động sử dụng `production` làm default
+
 ### 5.3. Tạo API Token
 
 1. Vẫn trong **Project Settings** → **"API"**

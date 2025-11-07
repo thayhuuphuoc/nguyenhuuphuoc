@@ -36,6 +36,18 @@ export default async function HomePage() {
         </p>
       </section>
 
+      {/* Empty State */}
+      {posts.length === 0 && (
+        <section className="text-center py-16">
+          <p className="text-muted-foreground text-lg mb-4">
+            No posts available yet. Check back soon for new content!
+          </p>
+          <Link href="/blog">
+            <Button variant="outline">View Blog</Button>
+          </Link>
+        </section>
+      )}
+
       {/* Featured Articles */}
       {featuredPosts.length > 0 && (
         <section className="mb-16">
