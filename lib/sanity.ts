@@ -1,4 +1,6 @@
 import { createClient } from "next-sanity"
+import imageUrlBuilder from "@sanity/image-url"
+import type { SanityImageSource } from "@sanity/image-url/lib/types/types"
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET
@@ -8,10 +10,32 @@ export const client = createClient({
   projectId,
   dataset,
   apiVersion,
-  useCdn: false,
+  useCdn: process.env.NODE_ENV === "production",
+  perspective: "published",
 })
 
-export async function getPosts() {
+// Preview client for draft content
+export const previewClient = createClient({
+  projectId,
+  dataset,
+  apiVersion,
+  useCdn: false,
+  token: process.env.SANITY_API_READ_TOKEN,
+  perspective: "draft",
+})
+
+// Helper function to get the appropriate client
+export const getClient = (preview?: boolean) => (preview ? previewClient : client)
+
+// Image URL builder
+const builder = imageUrlBuilder(client)
+
+export function urlFor(source: SanityImageSource) {
+  return builder.image(source)
+}
+
+export async function getPosts(preview = false) {
+  const client = getClient(preview)
   return await client.fetch(`
     *[_type == "post"] | order(publishedAt desc) {
       _id,
@@ -21,13 +45,14 @@ export async function getPosts() {
       publishedAt,
       readTime,
       mainImage,
-      author->{name, image},
-      categories[]->{title}
+      author->{name, image, slug},
+      categories[]->{title, slug}
     }
   `)
 }
 
-export async function getPostBySlug(slug: string) {
+export async function getPostBySlug(slug: string, preview = false) {
+  const client = getClient(preview)
   return await client.fetch(
     `
     *[_type == "post" && slug.current == $slug][0] {
@@ -39,17 +64,18 @@ export async function getPostBySlug(slug: string) {
       readTime,
       mainImage,
       body,
-      author->{name, image, bio, role, email},
-      categories[]->{title}
+      author->{name, image, bio, role, email, slug},
+      categories[]->{title, slug}
     }
   `,
     { slug },
   )
 }
 
-export async function getAuthors() {
+export async function getAuthors(preview = false) {
+  const client = getClient(preview)
   return await client.fetch(`
-    *[_type == "author"] {
+    *[_type == "author"] | order(name asc) {
       _id,
       name,
       slug,
@@ -61,7 +87,8 @@ export async function getAuthors() {
   `)
 }
 
-export async function getAuthorBySlug(slug: string) {
+export async function getAuthorBySlug(slug: string, preview = false) {
+  const client = getClient(preview)
   return await client.fetch(
     `
     *[_type == "author" && slug.current == $slug][0] {
@@ -78,12 +105,53 @@ export async function getAuthorBySlug(slug: string) {
   )
 }
 
-export async function getCategories() {
-  return await client.fetch(`
-    *[_type == "category"] {
+export async function getAuthorPosts(authorSlug: string, preview = false) {
+  const client = getClient(preview)
+  return await client.fetch(
+    `
+    *[_type == "post" && author->slug.current == $authorSlug] | order(publishedAt desc) {
       _id,
       title,
-      description
+      slug,
+      excerpt,
+      publishedAt,
+      readTime,
+      mainImage,
+      categories[]->{title, slug}
+    }
+  `,
+    { authorSlug },
+  )
+}
+
+export async function getCategories(preview = false) {
+  const client = getClient(preview)
+  return await client.fetch(`
+    *[_type == "category"] | order(title asc) {
+      _id,
+      title,
+      description,
+      slug
     }
   `)
+}
+
+export async function getPostsByCategory(categorySlug: string, preview = false) {
+  const client = getClient(preview)
+  return await client.fetch(
+    `
+    *[_type == "post" && $categorySlug in categories[]->slug.current] | order(publishedAt desc) {
+      _id,
+      title,
+      slug,
+      excerpt,
+      publishedAt,
+      readTime,
+      mainImage,
+      author->{name, image, slug},
+      categories[]->{title, slug}
+    }
+  `,
+    { categorySlug },
+  )
 }

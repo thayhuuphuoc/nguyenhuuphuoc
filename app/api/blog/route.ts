@@ -1,32 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-
-// Sample blog data - in production, this would come from a database
-const blogPosts = [
-  {
-    id: 1,
-    slug: "top-articles-technology",
-    title: "Top Articles to Read on Technology",
-    category: "Technology",
-    image: "/technology-network-abstract.jpg",
-    excerpt: "Explore the most comprehensive collection of technology articles covering the latest trends.",
-    views: 1205,
-    comments: 23,
-    date: "2025-06-09",
-    readTime: "8 min",
-  },
-  {
-    id: 2,
-    slug: "technical-blogging-skill",
-    title: "Technical blogging - A skill with many benefits",
-    category: "Technology",
-    image: "/purple-gradient-abstract.png",
-    excerpt: "Learn why technical blogging is an essential skill for developers.",
-    views: 845,
-    comments: 15,
-    date: "2025-06-08",
-    readTime: "6 min",
-  },
-]
+import { getPosts, getPostsByCategory } from "@/lib/sanity"
 
 export async function GET(request: NextRequest) {
   try {
@@ -34,26 +7,29 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get("category")
     const search = searchParams.get("search")
 
-    let filteredPosts = blogPosts
+    let posts
 
-    // Filter by category
-    if (category && category !== "All") {
-      filteredPosts = filteredPosts.filter((post) => post.category === category)
+    // Filter by category if provided
+    if (category) {
+      posts = await getPostsByCategory(category)
+    } else {
+      posts = await getPosts()
     }
 
     // Filter by search query
     if (search) {
-      filteredPosts = filteredPosts.filter(
-        (post) =>
-          post.title.toLowerCase().includes(search.toLowerCase()) ||
-          post.excerpt.toLowerCase().includes(search.toLowerCase()),
+      const searchLower = search.toLowerCase()
+      posts = posts.filter(
+        (post: any) =>
+          post.title?.toLowerCase().includes(searchLower) ||
+          post.excerpt?.toLowerCase().includes(searchLower),
       )
     }
 
     return NextResponse.json({
       success: true,
-      data: filteredPosts,
-      total: filteredPosts.length,
+      data: posts,
+      total: posts.length,
     })
   } catch (error) {
     console.error("[Blog API Error]", error)

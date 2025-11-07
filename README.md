@@ -61,20 +61,64 @@ A modern, feature-rich blogging platform built with Next.js 16, React 19, Tailwi
    \`\`\`
 
 4. **Add environment variables**
+   
+   Create a `.env.local` file in the root directory:
    \`\`\`
+   # Sanity Configuration
    NEXT_PUBLIC_SANITY_PROJECT_ID=your_project_id
    NEXT_PUBLIC_SANITY_DATASET=production
+   SANITY_API_READ_TOKEN=your_read_token
+   SANITY_PREVIEW_SECRET=your_preview_secret
+   
+   # NextAuth Configuration
+   AUTH_SECRET=your_auth_secret_here
+   NEXTAUTH_URL=http://localhost:3000
+   \`\`\`
+   
+   **To get your Sanity credentials:**
+   - Go to [sanity.io](https://www.sanity.io) and create a project
+   - Get your Project ID and Dataset name
+   - Create an API token with read permissions for preview mode
+   - Set a preview secret (any random string)
+   
+   **To generate AUTH_SECRET:**
+   - Run: `openssl rand -base64 32`
+   - Or use any random string generator
+
+5. **Set up Sanity Studio** (Optional but recommended)
+   \`\`\`bash
+   # Sanity Studio will be available at /studio
+   # Make sure your Sanity project is configured with the schemas in schemaTypes/
    \`\`\`
 
-5. **Run development server**
+6. **Run development server**
    \`\`\`bash
    npm run dev
    \`\`\`
 
-6. **Open in browser**
+7. **Open in browser**
    \`\`\`
    http://localhost:3000
    \`\`\`
+
+## Sanity CMS Setup
+
+1. **Create a Sanity project** at [sanity.io](https://www.sanity.io)
+2. **Configure schemas** - The project includes schemas for:
+   - Posts (with rich text content)
+   - Authors (with bio and role)
+   - Categories (with descriptions)
+3. **Set up preview mode**:
+   - Configure your Sanity project to use the preview URL: `/api/preview?secret=YOUR_SECRET&slug=SLUG`
+   - This allows you to preview draft content before publishing
+
+## Authentication
+
+The project uses NextAuth.js v5 for authentication. Demo credentials are configured in `lib/auth.ts`:
+- Email: `admin@blogforge.com` / Password: `admin123`
+- Email: `user@blogforge.com` / Password: `user123`
+
+**Note:** In production, replace the demo user system with a proper database-backed authentication.
 
 ## Project Structure
 

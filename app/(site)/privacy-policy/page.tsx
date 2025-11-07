@@ -1,79 +1,82 @@
-import Link from "next/link"
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Privacy Policy - BlogForge",
+  description: "Privacy Policy for BlogForge",
+}
 
 export default function PrivacyPolicyPage() {
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
-      {/* Header */}
-      <header className="border-b border-gray-800 bg-gray-950 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition">
-            <span className="font-bold text-sm">BLOG</span>
-            <span className="bg-orange-500 text-white px-2 py-1 text-xs font-bold">FORGE</span>
-          </Link>
-        </div>
-      </header>
+    <div className="container mx-auto px-4 py-12">
+      <div className="max-w-4xl mx-auto prose prose-lg dark:prose-invert">
+        <h1>Privacy Policy</h1>
+        <p className="text-muted-foreground">Last updated: {new Date().toLocaleDateString()}</p>
 
-      {/* Content */}
-      <section className="max-w-4xl mx-auto px-4 py-12">
-        <h1 className="text-4xl font-bold mb-8">Privacy Policy</h1>
+        <section>
+          <h2>Introduction</h2>
+          <p>
+            Welcome to BlogForge. We respect your privacy and are committed to protecting your
+            personal data. This privacy policy will inform you about how we look after your
+            personal data when you visit our website and tell you about your privacy rights and how
+            the law protects you.
+          </p>
+        </section>
 
-        <div className="space-y-8 text-gray-300">
-          <section>
-            <h2 className="text-2xl font-bold mb-4 text-white">1. Introduction</h2>
-            <p>
-              BlogForge ("we", "us", "our", or "Company") operates the website. This page informs you of our policies
-              regarding the collection, use, and disclosure of personal data when you use our Service and the choices
-              you have associated with that data.
-            </p>
-          </section>
+        <section>
+          <h2>Information We Collect</h2>
+          <p>We may collect, use, store and transfer different kinds of personal data about you:</p>
+          <ul>
+            <li>Identity Data: name, username</li>
+            <li>Contact Data: email address, telephone numbers</li>
+            <li>Technical Data: internet protocol (IP) address, browser type and version</li>
+            <li>Usage Data: information about how you use our website</li>
+          </ul>
+        </section>
 
-          <section>
-            <h2 className="text-2xl font-bold mb-4 text-white">2. Information Collection and Use</h2>
-            <p>
-              We collect several different types of information for various purposes to provide and improve our Service.
-            </p>
-            <ul className="list-disc list-inside space-y-2 mt-4">
-              <li>Personal Data: Email address, name, phone number</li>
-              <li>Usage Data: Pages visited, time spent on page, referral source</li>
-              <li>Cookies and Tracking: Device information, browser data</li>
-            </ul>
-          </section>
+        <section>
+          <h2>How We Use Your Information</h2>
+          <p>We use your personal data for the following purposes:</p>
+          <ul>
+            <li>To provide and maintain our service</li>
+            <li>To notify you about changes to our service</li>
+            <li>To provide customer support</li>
+            <li>To gather analysis or valuable information so that we can improve our service</li>
+            <li>To monitor the usage of our service</li>
+            <li>To detect, prevent and address technical issues</li>
+          </ul>
+        </section>
 
-          <section>
-            <h2 className="text-2xl font-bold mb-4 text-white">3. Use of Data</h2>
-            <p>BlogForge uses the collected data for various purposes:</p>
-            <ul className="list-disc list-inside space-y-2 mt-4">
-              <li>To provide and maintain our Service</li>
-              <li>To notify you about changes to our Service</li>
-              <li>To allow you to participate in interactive features</li>
-              <li>To provide customer support</li>
-              <li>To gather analysis or valuable information for service improvement</li>
-            </ul>
-          </section>
+        <section>
+          <h2>Data Security</h2>
+          <p>
+            We have put in place appropriate security measures to prevent your personal data from
+            being accidentally lost, used or accessed in an unauthorized way, altered or disclosed.
+          </p>
+        </section>
 
-          <section>
-            <h2 className="text-2xl font-bold mb-4 text-white">4. Security of Data</h2>
-            <p>
-              The security of your data is important to us but remember that no method of transmission over the Internet
-              or method of electronic storage is 100% secure. While we strive to use commercially acceptable means to
-              protect your Personal Data, we cannot guarantee its absolute security.
-            </p>
-          </section>
+        <section>
+          <h2>Your Rights</h2>
+          <p>Under certain circumstances, you have rights under data protection laws in relation to
+            your personal data:</p>
+          <ul>
+            <li>Request access to your personal data</li>
+            <li>Request correction of your personal data</li>
+            <li>Request erasure of your personal data</li>
+            <li>Object to processing of your personal data</li>
+            <li>Request restriction of processing your personal data</li>
+            <li>Request transfer of your personal data</li>
+            <li>Right to withdraw consent</li>
+          </ul>
+        </section>
 
-          <section>
-            <h2 className="text-2xl font-bold mb-4 text-white">5. Changes to This Privacy Policy</h2>
-            <p>
-              We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new
-              Privacy Policy on this page and updating the "effective date" at the top.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-bold mb-4 text-white">6. Contact Us</h2>
-            <p>If you have any questions about this Privacy Policy, please contact us at privacy@blogforge.com</p>
-          </section>
-        </div>
-      </section>
+        <section>
+          <h2>Contact Us</h2>
+          <p>
+            If you have any questions about this Privacy Policy, please contact us at{" "}
+            <a href="/contact-us">our contact page</a>.
+          </p>
+        </section>
+      </div>
     </div>
   )
 }
