@@ -13,7 +13,8 @@ export async function GET(request: NextRequest) {
   }
 
   // Enable Draft Mode
-  draftMode().enable()
+  const draft = await draftMode()
+  draft.enable()
 
   // Redirect to the path from the fetched post
   // If no slug is provided, redirect to home
