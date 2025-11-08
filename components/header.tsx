@@ -97,25 +97,26 @@ export function Header() {
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
-          {/* Search Button */}
+        <div className="flex items-center gap-2 md:gap-4">
+          {/* Search Button - Always visible */}
           <Button
             variant="ghost"
             size="icon"
-            className="hidden sm:flex"
             onClick={() => setSearchOpen(true)}
+            className="h-9 w-9"
           >
             <Search className="h-5 w-5" />
             <span className="sr-only">Search</span>
           </Button>
 
-          {/* Theme Toggle */}
+          {/* Theme Toggle - Always visible */}
           {mounted && (
             <Button
               variant="ghost"
               size="icon"
               onClick={handleThemeToggle}
               aria-label="Toggle theme"
+              className="h-9 w-9"
             >
               {resolvedTheme === "dark" || theme === "dark" ? (
                 <Sun className="h-5 w-5" />
@@ -183,19 +184,6 @@ export function Header() {
                 {item.name}
               </Link>
             ))}
-            {/* Mobile Search Button */}
-            <Button
-              variant="ghost"
-              size="sm"
-              className="w-full justify-start"
-              onClick={() => {
-                setSearchOpen(true)
-                setMobileMenuOpen(false)
-              }}
-            >
-              <Search className="mr-2 h-4 w-4" />
-              Search
-            </Button>
             {session ? (
               <div className="pt-3 border-t space-y-2">
                 <p className="text-sm text-muted-foreground">{session.user?.name}</p>
