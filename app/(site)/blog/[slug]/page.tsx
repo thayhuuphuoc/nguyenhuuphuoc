@@ -73,7 +73,8 @@ export default async function BlogPostPage({ params }: Props) {
     .slice(0, 2)
 
   return (
-    <article className="container mx-auto px-4 py-8 md:py-12 max-w-4xl">
+    <article className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+      <div className="max-w-4xl mx-auto">
       {/* Cover Image with Read Time */}
       {imageUrl && (
         <div className="relative h-80 md:h-96 rounded-lg overflow-hidden mb-8 bg-muted">
@@ -195,6 +196,7 @@ export default async function BlogPostPage({ params }: Props) {
           </div>
         </div>
       )}
+      </div>
     </article>
   )
 }

@@ -70,7 +70,7 @@ export default async function AuthorProfilePage({ params }: Props) {
   const posts = await getAuthorPosts(slug, isEnabled)
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Author Profile Header */}
       <section className="bg-gradient-to-r from-blue-600/10 to-purple-600/10 rounded-lg p-8 md:p-12 mb-12 border">
         <div className="flex flex-col md:flex-row items-start md:items-center gap-8">

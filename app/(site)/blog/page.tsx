@@ -57,7 +57,7 @@ export default async function BlogPage({
   const { posts, categories } = await getData(params)
 
   return (
-    <div className="container mx-auto px-4 py-8 md:py-12">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
       {/* Hero Section */}
       <section className="text-center mb-12">
         <h1 className="text-3xl md:text-4xl font-bold mb-4">Blog Articles</h1>

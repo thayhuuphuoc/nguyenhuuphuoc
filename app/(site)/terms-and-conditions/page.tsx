@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 
 export default function TermsAndConditionsPage() {
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="max-w-4xl mx-auto prose prose-lg dark:prose-invert">
         <h1>Terms and Conditions</h1>
         <p className="text-muted-foreground">Last updated: {new Date().toLocaleDateString()}</p>
