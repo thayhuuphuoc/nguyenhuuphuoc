@@ -32,12 +32,14 @@ async function getData() {
 export default async function HomePage() {
   const { posts, categories, authors } = await getData()
   
-  // Latest posts - 2 featured + 3 recent (total 5 latest posts)
-  const latestPosts = posts.slice(0, 5)
-  const featuredPosts = latestPosts.slice(0, 2)
-  const recentPosts = latestPosts.slice(2, 5)
+  // Featured posts - 5 posts with special layout
+  // Layout: Top row - 1 large + 1 small, Bottom row - 3 equal posts
+  const featuredPosts = posts.slice(0, 5)
+  const topLargePost = featuredPosts.slice(0, 1)
+  const topSmallPost = featuredPosts.slice(1, 2)
+  const bottomRowPosts = featuredPosts.slice(2, 5)
   
-  // Random 6 posts for grid (excluding the 5 latest posts)
+  // Random 6 posts for grid (excluding the 5 featured posts)
   const remainingPosts = posts.slice(5)
   const randomPosts = remainingPosts.length > 0 
     ? shuffleArray(remainingPosts).slice(0, 6)
@@ -55,25 +57,34 @@ export default async function HomePage() {
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-      {/* Featured Articles - 2 Large Cards (Latest Posts) */}
+      {/* Featured Articles Section - 5 posts with special layout */}
       {featuredPosts.length > 0 && (
         <section className="mb-12 md:mb-16">
-          <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
-            {featuredPosts.map((post: any) => (
-              <FeaturedPostCard key={post._id} post={post} />
-            ))}
+          {/* Top Row - 1 Large + 1 Small */}
+          <div className="grid md:grid-cols-3 gap-6 lg:gap-8 mb-6">
+            {/* Large Post - Takes 2 columns */}
+            <div className="md:col-span-2">
+              {topLargePost.length > 0 && (
+                <FeaturedPostCard post={topLargePost[0]} />
+              )}
+            </div>
+            
+            {/* Small Post - Takes 1 column */}
+            <div className="md:col-span-1">
+              {topSmallPost.length > 0 && (
+                <SmallPostCard post={topSmallPost[0]} />
+              )}
+            </div>
           </div>
-        </section>
-      )}
 
-      {/* Recent Articles - 3 Medium Cards (Latest Posts) */}
-      {recentPosts.length > 0 && (
-        <section className="mb-12 md:mb-16">
-          <div className="grid md:grid-cols-3 gap-6">
-            {recentPosts.map((post: any) => (
-              <RecentPostCard key={post._id} post={post} />
-            ))}
-          </div>
+          {/* Bottom Row - 3 Equal Posts */}
+          {bottomRowPosts.length > 0 && (
+            <div className="grid md:grid-cols-3 gap-6">
+              {bottomRowPosts.map((post: any) => (
+                <RecentPostCard key={post._id} post={post} />
+              ))}
+            </div>
+          )}
         </section>
       )}
 
@@ -139,7 +150,7 @@ export default async function HomePage() {
       {displayAuthors.length > 0 && (
         <section className="mb-12 md:mb-16">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold">Khám phá tác giả</h2>
+            <h2 className="text-2xl md:text-3xl font-bold">Các tác giả</h2>
             <Link href="/author" className="text-primary hover:underline text-sm font-medium">
               Xem tất cả tác giả
             </Link>
@@ -154,31 +165,29 @@ export default async function HomePage() {
 
       {/* Newsletter Section */}
       <section className="bg-muted rounded-lg p-8 md:p-12 mb-12 md:mb-16">
-        <div className="flex flex-col lg:flex-row items-center lg:items-start justify-between gap-8 lg:gap-12">
-          {/* Left Side - Text Content */}
-          <div className="flex-1 text-center lg:text-left">
+        <div className="flex flex-col items-center justify-center text-center max-w-3xl mx-auto">
+          {/* Text Content */}
+          <div className="mb-8">
             <h2 className="text-2xl md:text-3xl font-bold mb-4">Đăng ký nhận bản tin</h2>
             <p className="text-muted-foreground text-base md:text-lg">
-              Đăng ký nhận bản tin để là người đầu tiên biết về các bài viết mới, ưu đãi độc quyền,
+              Đăng ký nhận bản tin để là người đầu tiên xem các bài viết mới, ưu đãi độc quyền,
               khuyến mãi đặc biệt và tin tức mới nhất.
             </p>
           </div>
 
-          {/* Right Side - Email Form */}
-          <div className="flex-shrink-0 w-full lg:w-auto">
-            <form action="/api/subscribe" method="POST" className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
-              <input
-                type="email"
-                name="email"
-                placeholder="Nhập địa chỉ email của bạn"
-                required
-                className="flex-1 min-w-[280px] px-4 py-3 rounded-md bg-background border border-input focus:outline-none focus:ring-2 focus:ring-ring"
-              />
-              <Button type="submit" className="whitespace-nowrap">
-                Đăng ký
-              </Button>
-            </form>
-          </div>
+          {/* Email Form - Centered */}
+          <form action="/api/subscribe" method="POST" className="flex flex-col sm:flex-row gap-3 w-full max-w-md">
+            <input
+              type="email"
+              name="email"
+              placeholder="Nhập địa chỉ email của bạn"
+              required
+              className="flex-1 px-4 py-3 rounded-md bg-background border border-input focus:outline-none focus:ring-2 focus:ring-ring"
+            />
+            <Button type="submit" className="whitespace-nowrap">
+              Đăng ký
+            </Button>
+          </form>
         </div>
       </section>
 
@@ -267,13 +276,13 @@ function FeaturedPostCard({ post }: { post: any }) {
   )
 }
 
-// Recent Post Card - Medium (matches website mẫu)
-function RecentPostCard({ post }: { post: any }) {
-  const imageUrl = post.mainImage ? urlFor(post.mainImage).width(600).height(400).url() : null
+// Small Post Card - For sidebar (matches website mẫu)
+function SmallPostCard({ post }: { post: any }) {
+  const imageUrl = post.mainImage ? urlFor(post.mainImage).width(400).height(400).url() : null
 
   return (
-    <Link href={`/blog/${post.slug.current}`} className="group block">
-      <div className="relative h-64 rounded-lg overflow-hidden bg-muted">
+    <Link href={`/blog/${post.slug.current}`} className="group block h-full">
+      <div className="relative h-64 md:h-80 rounded-lg overflow-hidden bg-muted">
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -283,7 +292,7 @@ function RecentPostCard({ post }: { post: any }) {
             sizes="(max-width: 768px) 100vw, 33vw"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+          <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">
             Không có hình ảnh
           </div>
         )}
@@ -310,26 +319,27 @@ function RecentPostCard({ post }: { post: any }) {
             </span>
           </div>
         )}
-      </div>
-      <div className="mt-4">
-        <h6 className="font-semibold text-base md:text-lg mb-2 group-hover:text-primary transition-colors line-clamp-2">
-          {post.title}
-        </h6>
-        <div className="flex items-center gap-4 text-xs text-muted-foreground">
-          <div className="flex items-center gap-1">
-            <Eye size={14} />
-            <span>213</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <MessageCircle size={14} />
-            <span>3</span>
-          </div>
-          {post.publishedAt && (
+        {/* Title and Stats Overlay - Bottom */}
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent p-4">
+          <h6 className="text-white font-bold text-sm md:text-base mb-2 line-clamp-2">
+            {post.title}
+          </h6>
+          <div className="flex items-center gap-3 text-xs text-white/90">
             <div className="flex items-center gap-1">
-              <Calendar size={14} />
-              <span>{new Date(post.publishedAt).toLocaleDateString("vi-VN", { month: "numeric", day: "numeric", year: "numeric" })}</span>
+              <Eye size={14} className="text-white/90" />
+              <span>213</span>
             </div>
-          )}
+            <div className="flex items-center gap-1">
+              <MessageCircle size={14} className="text-white/90" />
+              <span>3</span>
+            </div>
+            {post.publishedAt && (
+              <div className="flex items-center gap-1">
+                <Calendar size={14} className="text-white/90" />
+                <span>{new Date(post.publishedAt).toLocaleDateString("vi-VN", { month: "numeric", day: "numeric", year: "numeric" })}</span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </Link>
