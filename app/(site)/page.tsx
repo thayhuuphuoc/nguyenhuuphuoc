@@ -67,31 +67,29 @@ export default async function HomePage({
       {/* Featured Articles Section - 5 posts with special layout */}
       {featuredPosts.length > 0 && (
         <section className="mb-12 md:mb-16">
-          {/* Top Row - 1 Large + 1 Small */}
-          <div className="grid md:grid-cols-3 gap-6 lg:gap-8 mb-6 lg:mb-8">
-            {/* Large Post - Takes 2 columns */}
-            <div className="md:col-span-2">
+          <div className="grid md:grid-cols-3 gap-6 lg:gap-8" style={{ gridTemplateRows: 'repeat(2, 1fr)' }}>
+            {/* Top Row - 1 Large + 1 Small */}
+            {/* Large Post - Takes 2 columns, row 1 */}
+            <div className="md:col-span-2" style={{ gridRow: '1' }}>
               {topLargePost.length > 0 && (
                 <FeaturedPostCard post={topLargePost[0]} />
               )}
             </div>
             
-            {/* Small Post - Takes 1 column (same width as bottom row cards) */}
-            <div className="md:col-span-1">
+            {/* Small Post - Takes 1 column, row 1 (same width as bottom row cards) */}
+            <div className="md:col-span-1" style={{ gridRow: '1' }}>
               {topSmallPost.length > 0 && (
                 <SmallPostCard post={topSmallPost[0]} />
               )}
             </div>
-          </div>
 
-          {/* Bottom Row - 3 Equal Posts */}
-          {bottomRowPosts.length > 0 && (
-            <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
-              {bottomRowPosts.map((post: any) => (
-                <RecentPostCard key={post._id} post={post} />
-              ))}
-            </div>
-          )}
+            {/* Bottom Row - 3 Equal Posts, row 2 */}
+            {bottomRowPosts.map((post: any) => (
+              <div key={post._id} className="md:col-span-1" style={{ gridRow: '2' }}>
+                <RecentPostCard post={post} />
+              </div>
+            ))}
+          </div>
         </section>
       )}
 
@@ -168,8 +166,8 @@ function FeaturedPostCard({ post }: { post: any }) {
   const imageUrl = post.mainImage ? urlFor(post.mainImage).width(800).height(500).url() : null
 
   return (
-    <Link href={`/blog/${post.slug.current}`} className="group block">
-      <div className="relative w-full aspect-[3/2] rounded-lg overflow-hidden bg-muted">
+    <Link href={`/blog/${post.slug.current}`} className="group block w-full h-full">
+      <div className="relative w-full h-full rounded-lg overflow-hidden bg-muted" style={{ aspectRatio: '3/2', minHeight: '100%' }}>
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -233,13 +231,13 @@ function FeaturedPostCard({ post }: { post: any }) {
   )
 }
 
-// Recent Post Card - Medium (for bottom row, 3 equal posts)
+// Recent Post Card - Medium (for bottom row, 3 equal posts - same style as top row)
 function RecentPostCard({ post }: { post: any }) {
   const imageUrl = post.mainImage ? urlFor(post.mainImage).width(600).height(400).url() : null
 
   return (
-    <Link href={`/blog/${post.slug.current}`} className="group block">
-      <div className="relative w-full aspect-[4/3] rounded-lg overflow-hidden bg-muted mb-4">
+    <Link href={`/blog/${post.slug.current}`} className="group block w-full h-full">
+      <div className="relative w-full h-full rounded-lg overflow-hidden bg-muted" style={{ aspectRatio: '3/2', minHeight: '100%' }}>
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -255,32 +253,7 @@ function RecentPostCard({ post }: { post: any }) {
         )}
         {/* Author Overlay - Top Left */}
         {post.author && (
-          <div className="absolute top-3 left-3 flex items-center gap-2 bg-background/80 backdrop-blur-sm px-2 py-1 rounded-full">
-            {post.author.image && (
-              <Image
-                src={urlFor(post.author.image).width(20).height(20).url()}
-                alt={post.author.name}
-                width={20}
-                height={20}
-                className="rounded-full"
-              />
-            )}
-            <span className="text-xs font-medium">{post.author.name}</span>
-          </div>
-        )}
-        {/* Category Badge - Top Right */}
-        {post.categories?.[0] && (
-          <div className="absolute top-3 right-3">
-            <span className="bg-primary text-primary-foreground px-2 py-1 rounded-full text-xs font-semibold">
-              {post.categories[0].title}
-            </span>
-          </div>
-        )}
-      </div>
-      <div className="space-y-2">
-        {/* Author */}
-        {post.author && (
-          <div className="flex items-center gap-2">
+          <div className="absolute top-4 left-4 flex items-center gap-2 bg-background/80 backdrop-blur-sm px-3 py-1.5 rounded-full">
             {post.author.image && (
               <Image
                 src={urlFor(post.author.image).width(24).height(24).url()}
@@ -290,37 +263,38 @@ function RecentPostCard({ post }: { post: any }) {
                 className="rounded-full"
               />
             )}
-            <span className="text-sm text-muted-foreground">{post.author.name}</span>
+            <span className="text-sm font-medium">{post.author.name}</span>
           </div>
         )}
-        {/* Category */}
+        {/* Category Badge - Top Right */}
         {post.categories?.[0] && (
-          <div>
-            <span className="text-xs text-primary font-medium">{post.categories[0].title}</span>
+          <div className="absolute top-4 right-4">
+            <span className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold">
+              {post.categories[0].title}
+            </span>
           </div>
         )}
-        {/* Title */}
-        <h6 className="font-semibold text-base group-hover:text-primary transition-colors line-clamp-2">
-          {post.title}
-        </h6>
-        {/* Stats */}
-        <div className="flex items-center justify-between text-xs text-muted-foreground pt-2">
-          <div className="flex items-center gap-3">
+        {/* Title and Stats Overlay - Bottom */}
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent p-6">
+          <h4 className="text-white font-bold text-xl md:text-2xl mb-3 line-clamp-2">
+            {post.title}
+          </h4>
+          <div className="flex items-center gap-4 text-sm text-white/90">
             <div className="flex items-center gap-1">
-              <Eye size={14} />
+              <Eye size={16} className="text-white/90" />
               <span>213</span>
             </div>
             <div className="flex items-center gap-1">
-              <MessageCircle size={14} />
+              <MessageCircle size={16} className="text-white/90" />
               <span>3</span>
             </div>
+            {post.publishedAt && (
+              <div className="flex items-center gap-1">
+                <Calendar size={16} className="text-white/90" />
+                <span>{new Date(post.publishedAt).toLocaleDateString("vi-VN", { month: "numeric", day: "numeric", year: "numeric" })}</span>
+              </div>
+            )}
           </div>
-          {post.publishedAt && (
-            <div className="flex items-center gap-1">
-              <Calendar size={14} />
-              <span>{new Date(post.publishedAt).toLocaleDateString("vi-VN", { month: "numeric", day: "numeric", year: "numeric" })}</span>
-            </div>
-          )}
         </div>
       </div>
     </Link>
@@ -332,8 +306,8 @@ function SmallPostCard({ post }: { post: any }) {
   const imageUrl = post.mainImage ? urlFor(post.mainImage).width(400).height(400).url() : null
 
   return (
-    <Link href={`/blog/${post.slug.current}`} className="group block">
-      <div className="relative w-full aspect-[3/2] rounded-lg overflow-hidden bg-muted">
+    <Link href={`/blog/${post.slug.current}`} className="group block w-full h-full">
+      <div className="relative w-full h-full rounded-lg overflow-hidden bg-muted" style={{ aspectRatio: '3/2', minHeight: '100%' }}>
         {imageUrl ? (
           <Image
             src={imageUrl}
