@@ -1,10 +1,12 @@
 import Link from "next/link"
 import Image from "next/image"
+import { Suspense } from "react"
 import { Eye, MessageCircle, Calendar, Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { getPosts, getCategories, getAuthors, urlFor } from "@/lib/sanity"
 import { draftMode } from "next/headers"
 import type { Metadata } from "next"
+import { CategoryPostsSection } from "@/components/category-posts-section"
 
 export const metadata: Metadata = {
   title: "Trang chủ - Nguyen Huu Phuoc",
@@ -29,7 +31,12 @@ async function getData() {
   return { posts, categories, authors }
 }
 
-export default async function HomePage() {
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ category?: string }>
+}) {
+  const params = await searchParams
   const { posts, categories, authors } = await getData()
   
   // Featured posts - 5 posts with special layout
@@ -89,62 +96,12 @@ export default async function HomePage() {
       )}
 
       {/* Explore Categories Section */}
-      <section className="mb-12 md:mb-16">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-3">Các chuyên mục bài viết</h1>
-          <p className="text-muted-foreground text-lg">
-            Chọn một chuyên mục để khám phá nội dung liên quan -- Tìm những gì bạn quan tâm
-          </p>
-        </div>
-
-        {/* Category Filters */}
-        {categories.length > 0 && (
-          <div className="flex flex-wrap gap-3 justify-center mb-12">
-            <Link
-              href="/blog"
-              className="px-4 py-2 rounded-full text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-            >
-              Tất cả ({posts.length})
-            </Link>
-            {categoryCounts.map((category: any) => (
-              <Link
-                key={category._id}
-                href={`/blog?category=${category.slug.current}`}
-                className="px-4 py-2 rounded-full text-sm font-medium bg-muted hover:bg-primary hover:text-primary-foreground transition-colors"
-              >
-                {category.title} ({category.count})
-              </Link>
-            ))}
-          </div>
-        )}
-
-        {/* Posts Grid - Random 6 posts */}
-        {randomPosts.length > 0 ? (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {randomPosts.map((post: any) => (
-              <CategoryPostCard key={post._id} post={post} />
-            ))}
-          </div>
-        ) : posts.length > 5 ? (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {posts.slice(5, 11).map((post: any) => (
-              <CategoryPostCard key={post._id} post={post} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">Không còn bài viết để hiển thị.</p>
-          </div>
-        )}
-
-        <div className="flex justify-center mt-8">
-          <Link href="/blog">
-            <Button variant="outline" size="lg" className="rounded-full">
-              Xem tất cả bài viết
-            </Button>
-          </Link>
-        </div>
-      </section>
+      <Suspense fallback={<div className="mb-12 md:mb-16 py-12 text-center">Đang tải...</div>}>
+        <CategoryPostsSection
+          posts={posts}
+          categories={categoryCounts}
+        />
+      </Suspense>
 
       {/* Explore Authors Section */}
       {displayAuthors.length > 0 && (
@@ -415,84 +372,6 @@ function SmallPostCard({ post }: { post: any }) {
   )
 }
 
-// Category Post Card - For Grid (matches website mẫu exactly)
-function CategoryPostCard({ post }: { post: any }) {
-  const imageUrl = post.mainImage ? urlFor(post.mainImage).width(600).height(400).url() : null
-
-  return (
-    <Link href={`/blog/${post.slug.current}`} className="group block">
-      <div className="relative h-56 rounded-lg overflow-hidden bg-muted mb-4">
-        {imageUrl ? (
-          <Image
-            src={imageUrl}
-            alt={post.title}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-            Không có hình ảnh
-          </div>
-        )}
-        {/* Read Time Badge - Top Right */}
-        {post.readTime && (
-          <div className="absolute top-3 right-3">
-            <span className="bg-background/90 text-foreground px-2 py-1 rounded-full text-xs font-semibold">
-              {post.readTime} phút đọc
-            </span>
-          </div>
-        )}
-      </div>
-      <div className="space-y-2">
-        {/* Author */}
-        {post.author && (
-          <div className="flex items-center gap-2">
-            {post.author.image && (
-              <Image
-                src={urlFor(post.author.image).width(24).height(24).url()}
-                alt={post.author.name}
-                width={24}
-                height={24}
-                className="rounded-full"
-              />
-            )}
-            <span className="text-sm text-muted-foreground">{post.author.name}</span>
-          </div>
-        )}
-        {/* Category */}
-        {post.categories?.[0] && (
-          <div>
-            <span className="text-xs text-primary font-medium">{post.categories[0].title}</span>
-          </div>
-        )}
-        {/* Title */}
-        <h6 className="font-semibold text-base group-hover:text-primary transition-colors line-clamp-2">
-          {post.title}
-        </h6>
-        {/* Stats */}
-        <div className="flex items-center justify-between text-xs text-muted-foreground pt-2">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1">
-              <Eye size={14} />
-              <span>213</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <MessageCircle size={14} />
-              <span>3</span>
-            </div>
-          </div>
-          {post.publishedAt && (
-            <div className="flex items-center gap-1">
-              <Calendar size={14} />
-              <span>{new Date(post.publishedAt).toLocaleDateString("vi-VN", { month: "numeric", day: "numeric", year: "numeric" })}</span>
-            </div>
-          )}
-        </div>
-      </div>
-    </Link>
-  )
-}
 
 // Author Card (matches website mẫu)
 function AuthorCard({ author }: { author: any }) {
