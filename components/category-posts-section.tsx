@@ -1,7 +1,7 @@
 "use client"
 
-import { useMemo } from "react"
-import { useSearchParams } from "next/navigation"
+import { useMemo, useCallback, useRef, useEffect } from "react"
+import { useSearchParams, useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 import { Eye, MessageCircle, Calendar } from "lucide-react"
@@ -13,20 +13,53 @@ interface CategoryPostsSectionProps {
   categories: any[]
 }
 
+// Helper function to shuffle array
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
+  return shuffled
+}
+
 export function CategoryPostsSection({
   posts,
   categories,
 }: CategoryPostsSectionProps) {
   const searchParams = useSearchParams()
+  const router = useRouter()
+  const pathname = usePathname()
   const selectedCategory = searchParams.get("category") || undefined
+  const randomPostsRef = useRef<any[]>([])
+  const postsLengthRef = useRef<number>(posts.length)
+
+  // Reset cache when posts change
+  useEffect(() => {
+    if (postsLengthRef.current !== posts.length) {
+      randomPostsRef.current = []
+      postsLengthRef.current = posts.length
+    }
+  }, [posts.length])
 
   // Filter posts by selected category
   const filteredPosts = useMemo(() => {
     if (!selectedCategory) {
       // If no category selected, show random 6 posts (excluding first 5 featured posts)
-      const remainingPosts = posts.slice(5)
-      return shuffleArray([...remainingPosts]).slice(0, 6)
+      // Cache the random posts to prevent re-shuffling on every render
+      if (randomPostsRef.current.length === 0) {
+        const remainingPosts = posts.slice(5)
+        if (remainingPosts.length === 0) {
+          randomPostsRef.current = []
+          return []
+        }
+        randomPostsRef.current = shuffleArray([...remainingPosts]).slice(0, Math.min(6, remainingPosts.length))
+      }
+      return randomPostsRef.current
     }
+
+    // Reset random posts cache when category is selected
+    randomPostsRef.current = []
 
     // Filter posts by selected category
     return posts.filter((post: any) =>
@@ -34,18 +67,24 @@ export function CategoryPostsSection({
     )
   }, [posts, selectedCategory])
 
-  // Helper function to shuffle array
-  function shuffleArray(array: any[]) {
-    const shuffled = [...array]
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1))
-      ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
-    }
-    return shuffled
-  }
+  // Handle category filter change
+  const handleCategoryChange = useCallback(
+    (categorySlug: string | null) => {
+      const params = new URLSearchParams()
+      
+      if (categorySlug) {
+        params.set("category", categorySlug)
+      }
+
+      // Update URL without scrolling to prevent page jump
+      const newUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname
+      router.push(newUrl, { scroll: false })
+    },
+    [pathname, router],
+  )
 
   return (
-    <section className="mb-12 md:mb-16">
+    <section className="mb-12 md:mb-16" id="categories-section">
       <div className="text-center mb-8">
         <h1 className="text-3xl md:text-4xl font-bold mb-3">Các chuyên mục bài viết</h1>
         <p className="text-muted-foreground text-lg">
@@ -56,8 +95,9 @@ export function CategoryPostsSection({
       {/* Category Filters */}
       {categories.length > 0 && (
         <div className="flex flex-wrap gap-3 justify-center mb-12">
-          <Link
-            href="/"
+          <button
+            type="button"
+            onClick={() => handleCategoryChange(null)}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
               !selectedCategory
                 ? "bg-primary text-primary-foreground"
@@ -65,11 +105,12 @@ export function CategoryPostsSection({
             }`}
           >
             Tất cả ({posts.length})
-          </Link>
+          </button>
           {categories.map((category: any) => (
-            <Link
+            <button
               key={category._id}
-              href={`/?category=${category.slug.current}`}
+              type="button"
+              onClick={() => handleCategoryChange(category.slug.current)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 selectedCategory === category.slug.current
                   ? "bg-primary text-primary-foreground"
@@ -77,7 +118,7 @@ export function CategoryPostsSection({
               }`}
             >
               {category.title} ({category.count})
-            </Link>
+            </button>
           ))}
         </div>
       )}
