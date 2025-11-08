@@ -61,16 +61,16 @@ export default async function HomePage() {
       {featuredPosts.length > 0 && (
         <section className="mb-12 md:mb-16">
           {/* Top Row - 1 Large + 1 Small */}
-          <div className="grid md:grid-cols-3 gap-6 lg:gap-8 mb-6">
+          <div className="grid md:grid-cols-3 gap-6 lg:gap-8 mb-6" style={{ gridAutoRows: '1fr' }}>
             {/* Large Post - Takes 2 columns */}
-            <div className="md:col-span-2">
+            <div className="md:col-span-2 flex">
               {topLargePost.length > 0 && (
                 <FeaturedPostCard post={topLargePost[0]} />
               )}
             </div>
             
             {/* Small Post - Takes 1 column */}
-            <div className="md:col-span-1">
+            <div className="md:col-span-1 flex">
               {topSmallPost.length > 0 && (
                 <SmallPostCard post={topSmallPost[0]} />
               )}
@@ -211,8 +211,8 @@ function FeaturedPostCard({ post }: { post: any }) {
   const imageUrl = post.mainImage ? urlFor(post.mainImage).width(800).height(500).url() : null
 
   return (
-    <Link href={`/blog/${post.slug.current}`} className="group block">
-      <div className="relative h-80 md:h-96 rounded-lg overflow-hidden bg-muted">
+    <Link href={`/blog/${post.slug.current}`} className="group block w-full h-full">
+      <div className="relative w-full h-full rounded-lg overflow-hidden bg-muted" style={{ minHeight: '450px' }}>
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -350,8 +350,8 @@ function SmallPostCard({ post }: { post: any }) {
   const imageUrl = post.mainImage ? urlFor(post.mainImage).width(400).height(400).url() : null
 
   return (
-    <Link href={`/blog/${post.slug.current}`} className="group block h-full">
-      <div className="relative h-64 md:h-80 rounded-lg overflow-hidden bg-muted">
+    <Link href={`/blog/${post.slug.current}`} className="group block w-full h-full">
+      <div className="relative w-full h-full rounded-lg overflow-hidden bg-muted" style={{ minHeight: '450px' }}>
         {imageUrl ? (
           <Image
             src={imageUrl}
