@@ -23,7 +23,8 @@ export default async function HomePage() {
   const { posts, categories, authors } = await getData()
   const featuredPosts = posts.slice(0, 2)
   const recentPosts = posts.slice(2, 5)
-  const gridPosts = posts.slice(5, 11)
+  // For grid posts, use all remaining posts or all posts if we don't have enough
+  const gridPosts = posts.length > 5 ? posts.slice(5) : posts.slice(2)
   const displayAuthors = authors.slice(0, 3)
 
   // Count posts per category
@@ -35,7 +36,7 @@ export default async function HomePage() {
   })
 
   return (
-    <div className="container mx-auto px-4 py-8 md:py-12">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
       {/* Featured Articles - 2 Large Cards (No Hero Section) */}
       {featuredPosts.length > 0 && (
         <section className="mb-12 md:mb-16">
@@ -59,16 +60,16 @@ export default async function HomePage() {
       )}
 
       {/* Explore Categories Section */}
-      {categories.length > 0 && (
-        <section className="mb-12 md:mb-16">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl md:text-4xl font-bold mb-3">Explore Categories</h1>
-            <p className="text-muted-foreground text-lg">
-              Choose a category to explore related content -- Find what interests you
-            </p>
-          </div>
+      <section className="mb-12 md:mb-16">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold mb-3">Explore Categories</h1>
+          <p className="text-muted-foreground text-lg">
+            Choose a category to explore related content -- Find what interests you
+          </p>
+        </div>
 
-          {/* Category Filters */}
+        {/* Category Filters */}
+        {categories.length > 0 && (
           <div className="flex flex-wrap gap-3 justify-center mb-12">
             <Link
               href="/blog"
@@ -86,25 +87,29 @@ export default async function HomePage() {
               </Link>
             ))}
           </div>
+        )}
 
-          {/* Posts Grid */}
-          {gridPosts.length > 0 && (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-              {gridPosts.map((post: any) => (
-                <CategoryPostCard key={post._id} post={post} />
-              ))}
-            </div>
-          )}
-
-          <div className="flex justify-center mt-8">
-            <Link href="/blog">
-              <Button variant="outline" size="lg" className="rounded-full">
-                View All Blogs
-              </Button>
-            </Link>
+        {/* Posts Grid - Always show if we have posts */}
+        {gridPosts.length > 0 ? (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {gridPosts.map((post: any) => (
+              <CategoryPostCard key={post._id} post={post} />
+            ))}
           </div>
-        </section>
-      )}
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">No more posts to display.</p>
+          </div>
+        )}
+
+        <div className="flex justify-center mt-8">
+          <Link href="/blog">
+            <Button variant="outline" size="lg" className="rounded-full">
+              View All Blogs
+            </Button>
+          </Link>
+        </div>
+      </section>
 
       {/* Explore Authors Section */}
       {displayAuthors.length > 0 && (
@@ -296,20 +301,20 @@ function RecentPostCard({ post }: { post: any }) {
   )
 }
 
-// Category Post Card - For Grid (matches website mẫu)
+// Category Post Card - For Grid (matches website mẫu exactly)
 function CategoryPostCard({ post }: { post: any }) {
   const imageUrl = post.mainImage ? urlFor(post.mainImage).width(600).height(400).url() : null
 
   return (
     <Link href={`/blog/${post.slug.current}`} className="group block">
-      <div className="relative h-56 rounded-lg overflow-hidden bg-muted">
+      <div className="relative h-56 rounded-lg overflow-hidden bg-muted mb-4">
         {imageUrl ? (
           <Image
             src={imageUrl}
             alt={post.title}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-300"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-muted-foreground">
@@ -325,7 +330,7 @@ function CategoryPostCard({ post }: { post: any }) {
           </div>
         )}
       </div>
-      <div className="mt-4 space-y-2">
+      <div className="space-y-2">
         {/* Author */}
         {post.author && (
           <div className="flex items-center gap-2">
