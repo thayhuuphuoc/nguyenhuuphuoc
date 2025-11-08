@@ -51,9 +51,10 @@ async function getData(searchParams: { category?: string; search?: string }) {
 export default async function BlogPage({
   searchParams,
 }: {
-  searchParams: { category?: string; search?: string }
+  searchParams: Promise<{ category?: string; search?: string }>
 }) {
-  const { posts, categories } = await getData(searchParams)
+  const params = await searchParams
+  const { posts, categories } = await getData(params)
 
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
@@ -76,7 +77,7 @@ export default async function BlogPage({
           <Link
             href="/blog"
             className={`px-4 py-2 rounded-full text-sm font-medium transition ${
-              !searchParams.category
+              !params.category
                 ? "bg-primary text-primary-foreground"
                 : "bg-muted hover:bg-primary hover:text-primary-foreground"
             }`}
@@ -88,7 +89,7 @@ export default async function BlogPage({
               key={category._id}
               href={`/blog?category=${category.slug.current}`}
               className={`px-4 py-2 rounded-full text-sm font-medium transition ${
-                searchParams.category === category.slug.current
+                params.category === category.slug.current
                   ? "bg-primary text-primary-foreground"
                   : "bg-muted hover:bg-primary hover:text-primary-foreground"
               }`}
@@ -213,4 +214,3 @@ function BlogPostCard({ post }: { post: any }) {
     </Link>
   )
 }
-

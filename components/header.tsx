@@ -107,7 +107,10 @@ export function Header() {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              onClick={() => {
+                const newTheme = theme === "dark" ? "light" : "dark"
+                setTheme(newTheme)
+              }}
               aria-label="Toggle theme"
             >
               {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
@@ -134,12 +137,12 @@ export function Header() {
             </div>
           ) : (
             <div className="hidden sm:flex items-center gap-2">
-              <Link href="/auth/signin">
+              <Link href="/sign-in">
                 <Button variant="outline" size="sm">
                   Sign In
                 </Button>
               </Link>
-              <Link href="/auth/signup">
+              <Link href="/sign-up">
                 <Button size="sm">Sign Up</Button>
               </Link>
             </div>
@@ -194,12 +197,12 @@ export function Header() {
               </div>
             ) : (
               <div className="pt-3 border-t space-y-2">
-                <Link href="/auth/signin" className="block">
+                <Link href="/sign-in" className="block">
                   <Button variant="outline" size="sm" className="w-full">
                     Sign In
                   </Button>
                 </Link>
-                <Link href="/auth/signup" className="block">
+                <Link href="/sign-up" className="block">
                   <Button size="sm" className="w-full">
                     Sign Up
                   </Button>
