@@ -53,8 +53,8 @@ function extractTextFromPortableText(content: any): string {
 }
 
 export const metadata: Metadata = {
-  title: "Authors - Nguyen Huu Phuoc",
-  description: "Meet the authors",
+  title: "Các tác giả - Nguyen Huu Phuoc",
+  description: "Gặp gỡ các tác giả",
 }
 
 function AuthorCard({ author }: { author: any }) {
@@ -113,8 +113,8 @@ export default async function AuthorsPage() {
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Hero Section */}
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4">Authors</h1>
-        <p className="text-muted-foreground text-lg">Meet the authors</p>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4">Các tác giả</h1>
+        <p className="text-muted-foreground text-lg">Gặp gỡ các tác giả</p>
       </section>
 
       {/* Authors Grid */}
@@ -126,7 +126,7 @@ export default async function AuthorsPage() {
         </section>
       ) : (
         <div className="text-center py-12">
-          <p className="text-muted-foreground text-lg">No authors found.</p>
+          <p className="text-muted-foreground text-lg">Không tìm thấy tác giả nào.</p>
         </div>
       )}
     </div>

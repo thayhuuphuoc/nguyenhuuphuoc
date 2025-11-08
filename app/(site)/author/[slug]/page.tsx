@@ -47,14 +47,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!author) {
     return {
-      title: "Author Not Found",
+      title: "Không tìm thấy tác giả",
     }
   }
 
   const bioText = author.bio ? extractTextFromPortableText(author.bio) : ""
   return {
     title: `${author.name} - Nguyen Huu Phuoc`,
-    description: bioText || `Articles by ${author.name}`,
+    description: bioText || `Bài viết của ${author.name}`,
   }
 }
 
@@ -104,7 +104,7 @@ export default async function AuthorProfilePage({ params }: Props) {
             <div className="flex gap-8 mb-6">
               <div>
                 <p className="text-2xl font-bold">{posts.length}</p>
-                <p className="text-sm text-muted-foreground">Articles Published</p>
+                <p className="text-sm text-muted-foreground">Bài viết đã xuất bản</p>
               </div>
             </div>
 
@@ -114,20 +114,20 @@ export default async function AuthorProfilePage({ params }: Props) {
                 href={`mailto:${author.email}`}
                 className="text-primary hover:underline text-sm"
               >
-                Contact {author.name.split(" ")[0]}
+                Liên hệ {author.name.split(" ")[0]}
               </a>
             )}
           </div>
 
           {/* Follow Button */}
-          <Button className="bg-primary hover:bg-primary/90">Follow Author</Button>
+          <Button className="bg-primary hover:bg-primary/90">Theo dõi tác giả</Button>
         </div>
       </section>
 
       {/* Main Content */}
       <section>
         <div className="flex justify-between items-center mb-8">
-          <h2 className="text-2xl font-bold">Recent Articles</h2>
+          <h2 className="text-2xl font-bold">Bài viết gần đây</h2>
         </div>
 
         {posts.length > 0 ? (
@@ -176,18 +176,22 @@ export default async function AuthorProfilePage({ params }: Props) {
                     {post.publishedAt && (
                       <div className="flex items-center gap-2">
                         <Calendar size={14} />
-                        <span>{new Date(post.publishedAt).toLocaleDateString()}</span>
+                        <span>{new Date(post.publishedAt).toLocaleDateString("vi-VN", {
+                          month: "numeric",
+                          day: "numeric",
+                          year: "numeric",
+                        })}</span>
                       </div>
                     )}
                     <div className="flex items-center gap-2">
                       <Eye size={14} />
-                      <span>Views</span>
+                      <span>Lượt xem</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <MessageCircle size={14} />
-                      <span>Comments</span>
+                      <span>Bình luận</span>
                     </div>
-                    {post.readTime && <span>{post.readTime} min read</span>}
+                    {post.readTime && <span>{post.readTime} phút đọc</span>}
                   </div>
                 </Link>
               )
@@ -195,14 +199,14 @@ export default async function AuthorProfilePage({ params }: Props) {
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-muted-foreground text-lg">No articles found for this author.</p>
+            <p className="text-muted-foreground text-lg">Không tìm thấy bài viết nào của tác giả này.</p>
           </div>
         )}
 
         {posts.length > 0 && (
           <div className="mt-8 text-center">
             <Link href="/blog">
-              <Button variant="outline">View All Articles</Button>
+              <Button variant="outline">Xem tất cả bài viết</Button>
             </Link>
           </div>
         )}
