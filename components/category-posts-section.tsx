@@ -67,9 +67,9 @@ export function CategoryPostsSection({
   return (
     <section className="mb-12 md:mb-16" id="categories-section">
       <div className="text-center mb-8">
-        <h1 className="text-3xl md:text-4xl font-bold mb-3">Các chuyên mục bài viết</h1>
+        <h1 className="text-3xl md:text-4xl font-bold mb-3">Danh mục bài viết</h1>
         <p className="text-muted-foreground text-lg">
-          Chọn một chuyên mục để khám phá nội dung liên quan -- Tìm những gì bạn quan tâm
+          Chọn một chuyên mục để khám phá nội dung liên quan - Tìm những gì bạn quan tâm
         </p>
       </div>
 

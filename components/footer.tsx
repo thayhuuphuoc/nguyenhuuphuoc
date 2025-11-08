@@ -41,15 +41,15 @@ export function Footer() {
             </a>
           </div>
         </div>
-        <div className="flex flex-wrap gap-4 justify-center md:justify-start text-sm text-muted-foreground pt-6 border-t">
+        <div className="flex flex-wrap gap-4 justify-center text-sm text-muted-foreground pt-6 border-t">
           <Link href="/terms-and-conditions" className="hover:text-foreground transition-colors">
-            Terms & Conditions
+            Điều khoản & Điều kiện
           </Link>
           <Link href="/privacy-policy" className="hover:text-foreground transition-colors">
-            Privacy Policy
+            Chính sách bảo mật
           </Link>
           <Link href="/contact-us" className="hover:text-foreground transition-colors">
-            Contact
+            Liên hệ
           </Link>
         </div>
       </div>
