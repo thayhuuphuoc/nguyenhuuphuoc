@@ -2,19 +2,17 @@ import { createClient } from "next-sanity"
 import imageUrlBuilder from "@sanity/image-url"
 import type { SanityImageSource } from "@sanity/image-url/lib/types/types"
 
-const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID
+const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || ""
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || "production"
 const apiVersion = "2024-01-01"
 
 if (!projectId) {
   console.warn("⚠️ NEXT_PUBLIC_SANITY_PROJECT_ID is not set. Sanity queries will fail.")
-}
-if (!dataset) {
-  console.warn("⚠️ NEXT_PUBLIC_SANITY_DATASET is not set. Using 'production' as default.")
+  console.warn("⚠️ Please create .env.local file with NEXT_PUBLIC_SANITY_PROJECT_ID")
 }
 
 export const client = createClient({
-  projectId,
+  projectId: projectId || "placeholder",
   dataset,
   apiVersion,
   useCdn: process.env.NODE_ENV === "production",
@@ -23,7 +21,7 @@ export const client = createClient({
 
 // Preview client for draft content
 export const previewClient = createClient({
-  projectId,
+  projectId: projectId || "placeholder",
   dataset,
   apiVersion,
   useCdn: false,
