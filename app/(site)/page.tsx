@@ -276,6 +276,75 @@ function FeaturedPostCard({ post }: { post: any }) {
   )
 }
 
+// Recent Post Card - Medium (for bottom row, 3 equal posts)
+function RecentPostCard({ post }: { post: any }) {
+  const imageUrl = post.mainImage ? urlFor(post.mainImage).width(600).height(400).url() : null
+
+  return (
+    <Link href={`/blog/${post.slug.current}`} className="group block">
+      <div className="relative h-64 rounded-lg overflow-hidden bg-muted">
+        {imageUrl ? (
+          <Image
+            src={imageUrl}
+            alt={post.title}
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            sizes="(max-width: 768px) 100vw, 33vw"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+            Không có hình ảnh
+          </div>
+        )}
+        {/* Author Overlay - Top Left */}
+        {post.author && (
+          <div className="absolute top-3 left-3 flex items-center gap-2 bg-background/80 backdrop-blur-sm px-2 py-1 rounded-full">
+            {post.author.image && (
+              <Image
+                src={urlFor(post.author.image).width(20).height(20).url()}
+                alt={post.author.name}
+                width={20}
+                height={20}
+                className="rounded-full"
+              />
+            )}
+            <span className="text-xs font-medium">{post.author.name}</span>
+          </div>
+        )}
+        {/* Category Badge - Top Right */}
+        {post.categories?.[0] && (
+          <div className="absolute top-3 right-3">
+            <span className="bg-primary text-primary-foreground px-2 py-1 rounded-full text-xs font-semibold">
+              {post.categories[0].title}
+            </span>
+          </div>
+        )}
+      </div>
+      <div className="mt-4">
+        <h6 className="font-semibold text-base md:text-lg mb-2 group-hover:text-primary transition-colors line-clamp-2">
+          {post.title}
+        </h6>
+        <div className="flex items-center gap-4 text-xs text-muted-foreground">
+          <div className="flex items-center gap-1">
+            <Eye size={14} />
+            <span>213</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <MessageCircle size={14} />
+            <span>3</span>
+          </div>
+          {post.publishedAt && (
+            <div className="flex items-center gap-1">
+              <Calendar size={14} />
+              <span>{new Date(post.publishedAt).toLocaleDateString("vi-VN", { month: "numeric", day: "numeric", year: "numeric" })}</span>
+            </div>
+          )}
+        </div>
+      </div>
+    </Link>
+  )
+}
+
 // Small Post Card - For sidebar (matches website mẫu)
 function SmallPostCard({ post }: { post: any }) {
   const imageUrl = post.mainImage ? urlFor(post.mainImage).width(400).height(400).url() : null
