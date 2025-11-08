@@ -67,25 +67,27 @@ export default async function HomePage({
       {/* Featured Articles Section - 5 posts with special layout */}
       {featuredPosts.length > 0 && (
         <section className="mb-12 md:mb-16">
-          <div className="grid md:grid-cols-3 gap-6 lg:gap-8" style={{ gridTemplateRows: 'repeat(2, 1fr)' }}>
+          {/* Mobile: Stack vertically, Desktop: Grid layout */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8" style={{ gridTemplateRows: 'auto auto' }}>
             {/* Top Row - 1 Large + 1 Small */}
-            {/* Large Post - Takes 2 columns, row 1 */}
-            <div className="md:col-span-2" style={{ gridRow: '1' }}>
+            {/* Large Post - Takes full width on mobile, 2 columns on desktop, row 1 */}
+            <div className="col-span-1 md:col-span-2" style={{ gridRow: '1' }}>
               {topLargePost.length > 0 && (
                 <FeaturedPostCard post={topLargePost[0]} />
               )}
             </div>
             
-            {/* Small Post - Takes 1 column, row 1 (same width as bottom row cards) */}
-            <div className="md:col-span-1" style={{ gridRow: '1' }}>
+            {/* Small Post - Takes full width on mobile, 1 column on desktop, row 1 */}
+            <div className="col-span-1 md:col-span-1" style={{ gridRow: '1' }}>
               {topSmallPost.length > 0 && (
                 <SmallPostCard post={topSmallPost[0]} />
               )}
             </div>
 
             {/* Bottom Row - 3 Equal Posts, row 2 */}
+            {/* On mobile: stack vertically, on tablet+: grid 3 columns */}
             {bottomRowPosts.map((post: any) => (
-              <div key={post._id} className="md:col-span-1" style={{ gridRow: '2' }}>
+              <div key={post._id} className="col-span-1 md:col-span-1" style={{ gridRow: '2' }}>
                 <RecentPostCard post={post} />
               </div>
             ))}
@@ -167,7 +169,7 @@ function FeaturedPostCard({ post }: { post: any }) {
 
   return (
     <Link href={`/blog/${post.slug.current}`} className="group block w-full h-full">
-      <div className="relative w-full h-full rounded-lg overflow-hidden bg-muted" style={{ aspectRatio: '5/2' }}>
+      <div className="relative w-full h-full rounded-lg overflow-hidden bg-muted aspect-[5/2] min-h-[250px] sm:min-h-[300px] md:min-h-0">
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -183,44 +185,44 @@ function FeaturedPostCard({ post }: { post: any }) {
         )}
         {/* Author Overlay - Top Left */}
         {post.author && (
-          <div className="absolute top-4 left-4 flex items-center gap-2 bg-background/80 backdrop-blur-sm px-3 py-1.5 rounded-full">
+          <div className="absolute top-2 left-2 md:top-4 md:left-4 flex items-center gap-1.5 md:gap-2 bg-background/80 backdrop-blur-sm px-2 py-1 md:px-3 md:py-1.5 rounded-full">
             {post.author.image && (
               <Image
                 src={urlFor(post.author.image).width(24).height(24).url()}
                 alt={post.author.name}
-                width={24}
-                height={24}
-                className="rounded-full"
+                width={20}
+                height={20}
+                className="md:w-6 md:h-6 rounded-full"
               />
             )}
-            <span className="text-sm font-medium">{post.author.name}</span>
+            <span className="text-xs md:text-sm font-medium">{post.author.name}</span>
           </div>
         )}
         {/* Category Badge - Top Right */}
         {post.categories?.[0] && (
-          <div className="absolute top-4 right-4">
-            <span className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold">
+          <div className="absolute top-2 right-2 md:top-4 md:right-4">
+            <span className="bg-primary text-primary-foreground px-2 py-0.5 md:px-3 md:py-1 rounded-full text-xs font-semibold">
               {post.categories[0].title}
             </span>
           </div>
         )}
         {/* Title and Stats Overlay - Bottom */}
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent p-6">
-          <h4 className="text-white font-bold text-xl md:text-2xl mb-3 line-clamp-2">
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent p-4 md:p-6">
+          <h4 className="text-white font-bold text-base sm:text-lg md:text-xl lg:text-2xl mb-2 md:mb-3 line-clamp-2">
             {post.title}
           </h4>
-          <div className="flex items-center gap-4 text-sm text-white/90">
+          <div className="flex items-center gap-2 md:gap-4 text-xs sm:text-sm text-white/90">
             <div className="flex items-center gap-1">
-              <Eye size={16} className="text-white/90" />
+              <Eye size={14} className="md:w-4 md:h-4 text-white/90" />
               <span>213</span>
             </div>
             <div className="flex items-center gap-1">
-              <MessageCircle size={16} className="text-white/90" />
+              <MessageCircle size={14} className="md:w-4 md:h-4 text-white/90" />
               <span>3</span>
             </div>
             {post.publishedAt && (
               <div className="flex items-center gap-1">
-                <Calendar size={16} className="text-white/90" />
+                <Calendar size={14} className="md:w-4 md:h-4 text-white/90" />
                 <span>{new Date(post.publishedAt).toLocaleDateString("vi-VN", { month: "numeric", day: "numeric", year: "numeric" })}</span>
               </div>
             )}
@@ -237,7 +239,7 @@ function RecentPostCard({ post }: { post: any }) {
 
   return (
     <Link href={`/blog/${post.slug.current}`} className="group block w-full h-full">
-      <div className="relative w-full h-full rounded-lg overflow-hidden bg-muted" style={{ aspectRatio: '5/2' }}>
+      <div className="relative w-full h-full rounded-lg overflow-hidden bg-muted aspect-[5/2] min-h-[200px] sm:min-h-[250px] md:min-h-0">
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -253,44 +255,44 @@ function RecentPostCard({ post }: { post: any }) {
         )}
         {/* Author Overlay - Top Left */}
         {post.author && (
-          <div className="absolute top-4 left-4 flex items-center gap-2 bg-background/80 backdrop-blur-sm px-3 py-1.5 rounded-full">
+          <div className="absolute top-2 left-2 md:top-4 md:left-4 flex items-center gap-1.5 md:gap-2 bg-background/80 backdrop-blur-sm px-2 py-1 md:px-3 md:py-1.5 rounded-full">
             {post.author.image && (
               <Image
                 src={urlFor(post.author.image).width(24).height(24).url()}
                 alt={post.author.name}
-                width={24}
-                height={24}
-                className="rounded-full"
+                width={20}
+                height={20}
+                className="md:w-6 md:h-6 rounded-full"
               />
             )}
-            <span className="text-sm font-medium">{post.author.name}</span>
+            <span className="text-xs md:text-sm font-medium">{post.author.name}</span>
           </div>
         )}
         {/* Category Badge - Top Right */}
         {post.categories?.[0] && (
-          <div className="absolute top-4 right-4">
-            <span className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold">
+          <div className="absolute top-2 right-2 md:top-4 md:right-4">
+            <span className="bg-primary text-primary-foreground px-2 py-0.5 md:px-3 md:py-1 rounded-full text-xs font-semibold">
               {post.categories[0].title}
             </span>
           </div>
         )}
         {/* Title and Stats Overlay - Bottom */}
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent p-6">
-          <h4 className="text-white font-bold text-xl md:text-2xl mb-3 line-clamp-2">
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent p-4 md:p-6">
+          <h4 className="text-white font-bold text-base sm:text-lg md:text-xl lg:text-2xl mb-2 md:mb-3 line-clamp-2">
             {post.title}
           </h4>
-          <div className="flex items-center gap-4 text-sm text-white/90">
+          <div className="flex items-center gap-2 md:gap-4 text-xs sm:text-sm text-white/90">
             <div className="flex items-center gap-1">
-              <Eye size={16} className="text-white/90" />
+              <Eye size={14} className="md:w-4 md:h-4 text-white/90" />
               <span>213</span>
             </div>
             <div className="flex items-center gap-1">
-              <MessageCircle size={16} className="text-white/90" />
+              <MessageCircle size={14} className="md:w-4 md:h-4 text-white/90" />
               <span>3</span>
             </div>
             {post.publishedAt && (
               <div className="flex items-center gap-1">
-                <Calendar size={16} className="text-white/90" />
+                <Calendar size={14} className="md:w-4 md:h-4 text-white/90" />
                 <span>{new Date(post.publishedAt).toLocaleDateString("vi-VN", { month: "numeric", day: "numeric", year: "numeric" })}</span>
               </div>
             )}
@@ -307,7 +309,7 @@ function SmallPostCard({ post }: { post: any }) {
 
   return (
     <Link href={`/blog/${post.slug.current}`} className="group block w-full h-full">
-      <div className="relative w-full h-full rounded-lg overflow-hidden bg-muted" style={{ aspectRatio: '5/2' }}>
+      <div className="relative w-full h-full rounded-lg overflow-hidden bg-muted aspect-[5/2] min-h-[250px] sm:min-h-[300px] md:min-h-0">
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -323,44 +325,44 @@ function SmallPostCard({ post }: { post: any }) {
         )}
         {/* Author Overlay - Top Left */}
         {post.author && (
-          <div className="absolute top-4 left-4 flex items-center gap-2 bg-background/80 backdrop-blur-sm px-3 py-1.5 rounded-full">
+          <div className="absolute top-2 left-2 md:top-4 md:left-4 flex items-center gap-1.5 md:gap-2 bg-background/80 backdrop-blur-sm px-2 py-1 md:px-3 md:py-1.5 rounded-full">
             {post.author.image && (
               <Image
                 src={urlFor(post.author.image).width(24).height(24).url()}
                 alt={post.author.name}
-                width={24}
-                height={24}
-                className="rounded-full"
+                width={20}
+                height={20}
+                className="md:w-6 md:h-6 rounded-full"
               />
             )}
-            <span className="text-sm font-medium">{post.author.name}</span>
+            <span className="text-xs md:text-sm font-medium">{post.author.name}</span>
           </div>
         )}
         {/* Category Badge - Top Right */}
         {post.categories?.[0] && (
-          <div className="absolute top-4 right-4">
-            <span className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold">
+          <div className="absolute top-2 right-2 md:top-4 md:right-4">
+            <span className="bg-primary text-primary-foreground px-2 py-0.5 md:px-3 md:py-1 rounded-full text-xs font-semibold">
               {post.categories[0].title}
             </span>
           </div>
         )}
         {/* Title and Stats Overlay - Bottom */}
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent p-6">
-          <h4 className="text-white font-bold text-xl md:text-2xl mb-3 line-clamp-2">
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent p-4 md:p-6">
+          <h4 className="text-white font-bold text-base sm:text-lg md:text-xl lg:text-2xl mb-2 md:mb-3 line-clamp-2">
             {post.title}
           </h4>
-          <div className="flex items-center gap-4 text-sm text-white/90">
+          <div className="flex items-center gap-2 md:gap-4 text-xs sm:text-sm text-white/90">
             <div className="flex items-center gap-1">
-              <Eye size={16} className="text-white/90" />
+              <Eye size={14} className="md:w-4 md:h-4 text-white/90" />
               <span>213</span>
             </div>
             <div className="flex items-center gap-1">
-              <MessageCircle size={16} className="text-white/90" />
+              <MessageCircle size={14} className="md:w-4 md:h-4 text-white/90" />
               <span>3</span>
             </div>
             {post.publishedAt && (
               <div className="flex items-center gap-1">
-                <Calendar size={16} className="text-white/90" />
+                <Calendar size={14} className="md:w-4 md:h-4 text-white/90" />
                 <span>{new Date(post.publishedAt).toLocaleDateString("vi-VN", { month: "numeric", day: "numeric", year: "numeric" })}</span>
               </div>
             )}
