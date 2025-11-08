@@ -24,26 +24,21 @@ export function CategoryPostsSection({
 
   // Filter and sort posts by selected category
   const filteredPosts = useMemo(() => {
-    let filtered: any[] = []
-
+    // Posts are already sorted by publishedAt desc from Sanity
+    // So we can directly use them without re-sorting
+    
     if (!selectedCategory) {
-      // If no category selected, show 6 latest posts (excluding first 5 featured posts)
-      const remainingPosts = posts.slice(5)
-      // Sort by publishedAt (newest first) and take first 6
-      filtered = remainingPosts
-        .sort((a: any, b: any) => {
-          const dateA = a.publishedAt ? new Date(a.publishedAt).getTime() : 0
-          const dateB = b.publishedAt ? new Date(b.publishedAt).getTime() : 0
-          return dateB - dateA // Descending order (newest first)
-        })
-        .slice(0, 6)
+      // Tab "Tất cả" - show 6 latest posts from all posts
+      // Posts are already sorted by publishedAt desc, so just take first 6
+      return posts.slice(0, 6)
     } else {
-      // Filter posts by selected category
-      filtered = posts.filter((post: any) =>
+      // Filter posts by selected category, then sort and take first 6
+      const categoryPosts = posts.filter((post: any) =>
         post.categories?.some((cat: any) => cat.slug?.current === selectedCategory),
       )
+      
       // Sort by publishedAt (newest first) and take first 6
-      filtered = filtered
+      return categoryPosts
         .sort((a: any, b: any) => {
           const dateA = a.publishedAt ? new Date(a.publishedAt).getTime() : 0
           const dateB = b.publishedAt ? new Date(b.publishedAt).getTime() : 0
@@ -51,8 +46,6 @@ export function CategoryPostsSection({
         })
         .slice(0, 6)
     }
-
-    return filtered
   }, [posts, selectedCategory])
 
   // Handle category filter change
