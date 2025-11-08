@@ -67,27 +67,42 @@ export default async function HomePage({
       {/* Featured Articles Section - 5 posts with special layout */}
       {featuredPosts.length > 0 && (
         <section className="mb-12 md:mb-16">
-          {/* Mobile: Stack vertically, Desktop: Grid layout */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8" style={{ gridTemplateRows: 'auto auto' }}>
+          {/* Mobile: Stack all cards vertically */}
+          <div className="flex flex-col md:hidden gap-4">
+            {/* Large Post */}
+            {topLargePost.length > 0 && (
+              <FeaturedPostCard post={topLargePost[0]} />
+            )}
+            {/* Small Post */}
+            {topSmallPost.length > 0 && (
+              <SmallPostCard post={topSmallPost[0]} />
+            )}
+            {/* Bottom Row Posts */}
+            {bottomRowPosts.map((post: any) => (
+              <RecentPostCard key={post._id} post={post} />
+            ))}
+          </div>
+
+          {/* Desktop: Grid layout with 2 rows */}
+          <div className="hidden md:grid md:grid-cols-3 gap-6 lg:gap-8" style={{ gridTemplateRows: 'repeat(2, 1fr)' }}>
             {/* Top Row - 1 Large + 1 Small */}
-            {/* Large Post - Takes full width on mobile, 2 columns on desktop, row 1 */}
-            <div className="col-span-1 md:col-span-2" style={{ gridRow: '1' }}>
+            {/* Large Post - Takes 2 columns, row 1 */}
+            <div className="md:col-span-2" style={{ gridRow: '1' }}>
               {topLargePost.length > 0 && (
                 <FeaturedPostCard post={topLargePost[0]} />
               )}
             </div>
             
-            {/* Small Post - Takes full width on mobile, 1 column on desktop, row 1 */}
-            <div className="col-span-1 md:col-span-1" style={{ gridRow: '1' }}>
+            {/* Small Post - Takes 1 column, row 1 */}
+            <div className="md:col-span-1" style={{ gridRow: '1' }}>
               {topSmallPost.length > 0 && (
                 <SmallPostCard post={topSmallPost[0]} />
               )}
             </div>
 
             {/* Bottom Row - 3 Equal Posts, row 2 */}
-            {/* On mobile: stack vertically, on tablet+: grid 3 columns */}
             {bottomRowPosts.map((post: any) => (
-              <div key={post._id} className="col-span-1 md:col-span-1" style={{ gridRow: '2' }}>
+              <div key={post._id} className="md:col-span-1" style={{ gridRow: '2' }}>
                 <RecentPostCard post={post} />
               </div>
             ))}
