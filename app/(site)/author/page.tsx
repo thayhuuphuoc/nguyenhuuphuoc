@@ -4,9 +4,74 @@ import { getAuthors, urlFor } from "@/lib/sanity"
 import { draftMode } from "next/headers"
 import type { Metadata } from "next"
 
+// Helper function to extract text from PortableText
+function extractTextFromPortableText(content: any): string {
+  if (!content) return ""
+  if (typeof content === "string") return content
+  if (!Array.isArray(content)) {
+    // If it's an object (single block), try to extract text
+    if (content && typeof content === "object" && content._type === "block" && content.children) {
+      return content.children.map((child: any) => child?.text || "").join("").trim()
+    }
+    return ""
+  }
+  try {
+    return content
+      .map((block: any) => {
+        if (block && block._type === "block" && Array.isArray(block.children)) {
+          return block.children.map((child: any) => child?.text || "").join("")
+        }
+        return ""
+      })
+      .join(" ")
+      .trim()
+  } catch (error) {
+    console.error("Error extracting text from PortableText:", error)
+    return ""
+  }
+}
+
 export const metadata: Metadata = {
   title: "Authors - Nguyen Huu Phuoc",
   description: "Meet the authors",
+}
+
+function AuthorCard({ author }: { author: any }) {
+  const bioText = author.bio ? extractTextFromPortableText(author.bio) : ""
+  
+  return (
+    <Link
+      href={`/author/${author.slug.current}`}
+      className="group bg-card rounded-lg p-6 hover:bg-accent transition-colors border"
+    >
+      <div className="text-center">
+        {author.image ? (
+          <Image
+            src={urlFor(author.image).width(128).height(128).url()}
+            alt={author.name}
+            width={128}
+            height={128}
+            className="w-16 h-16 rounded-full mx-auto mb-4 object-cover"
+          />
+        ) : (
+          <div className="w-16 h-16 rounded-full mx-auto mb-4 bg-muted flex items-center justify-center">
+            <span className="text-2xl">{author.name.charAt(0)}</span>
+          </div>
+        )}
+        <h3 className="text-lg font-semibold mb-1 group-hover:text-primary transition-colors">
+          {author.name}
+        </h3>
+        {author.role && (
+          <p className="text-sm text-primary mb-3">{author.role}</p>
+        )}
+        {bioText && (
+          <p className="text-sm text-muted-foreground line-clamp-2">
+            {bioText}
+          </p>
+        )}
+      </div>
+    </Link>
+  )
 }
 
 export default async function AuthorsPage() {
@@ -25,36 +90,7 @@ export default async function AuthorsPage() {
       {authors.length > 0 ? (
         <section className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {authors.map((author: any) => (
-            <Link
-              key={author._id}
-              href={`/author/${author.slug.current}`}
-              className="group bg-card rounded-lg p-6 hover:bg-accent transition-colors border"
-            >
-              <div className="text-center">
-                {author.image ? (
-                  <Image
-                    src={urlFor(author.image).width(128).height(128).url()}
-                    alt={author.name}
-                    width={128}
-                    height={128}
-                    className="w-16 h-16 rounded-full mx-auto mb-4 object-cover"
-                  />
-                ) : (
-                  <div className="w-16 h-16 rounded-full mx-auto mb-4 bg-muted flex items-center justify-center">
-                    <span className="text-2xl">{author.name.charAt(0)}</span>
-                  </div>
-                )}
-                <h3 className="text-lg font-semibold mb-1 group-hover:text-primary transition-colors">
-                  {author.name}
-                </h3>
-                {author.role && (
-                  <p className="text-sm text-primary mb-3">{author.role}</p>
-                )}
-                {author.bio && (
-                  <p className="text-sm text-muted-foreground line-clamp-2">{author.bio}</p>
-                )}
-              </div>
-            </Link>
+            <AuthorCard key={author._id} author={author} />
           ))}
         </section>
       ) : (

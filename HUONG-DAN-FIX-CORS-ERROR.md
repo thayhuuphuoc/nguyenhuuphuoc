@@ -29,6 +29,7 @@ Sanity project của bạn chưa được cấu hình để cho phép requests t
    **Development (Local):**
    ```
    http://localhost:3000
+   http://localhost:3334
    ```
 
    **Nếu dùng port khác:**

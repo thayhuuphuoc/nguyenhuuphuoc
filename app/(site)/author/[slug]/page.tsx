@@ -1,11 +1,40 @@
 import Link from "next/link"
 import Image from "next/image"
 import { notFound } from "next/navigation"
+import { PortableText } from "@portabletext/react"
 import { Calendar, Eye, MessageCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { getAuthorBySlug, getAuthorPosts, urlFor } from "@/lib/sanity"
 import { draftMode } from "next/headers"
 import type { Metadata } from "next"
+import { portableTextComponents } from "@/lib/portable-text-components"
+
+// Helper function to extract text from PortableText
+function extractTextFromPortableText(content: any): string {
+  if (!content) return ""
+  if (typeof content === "string") return content
+  if (!Array.isArray(content)) {
+    // If it's an object (single block), try to extract text
+    if (content && typeof content === "object" && content._type === "block" && content.children) {
+      return content.children.map((child: any) => child?.text || "").join("").trim()
+    }
+    return ""
+  }
+  try {
+    return content
+      .map((block: any) => {
+        if (block && block._type === "block" && Array.isArray(block.children)) {
+          return block.children.map((child: any) => child?.text || "").join("")
+        }
+        return ""
+      })
+      .join(" ")
+      .trim()
+  } catch (error) {
+    console.error("Error extracting text from PortableText:", error)
+    return ""
+  }
+}
 
 type Props = {
   params: Promise<{ slug: string }>
@@ -22,9 +51,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }
   }
 
+  const bioText = author.bio ? extractTextFromPortableText(author.bio) : ""
   return {
     title: `${author.name} - Nguyen Huu Phuoc`,
-    description: author.bio || `Articles by ${author.name}`,
+    description: bioText || `Articles by ${author.name}`,
   }
 }
 
@@ -60,7 +90,15 @@ export default async function AuthorProfilePage({ params }: Props) {
           <div className="flex-1">
             <h1 className="text-4xl font-bold mb-2">{author.name}</h1>
             {author.role && <p className="text-primary text-lg mb-3">{author.role}</p>}
-            {author.bio && <p className="text-muted-foreground mb-6">{author.bio}</p>}
+            {author.bio && (
+              <div className="text-muted-foreground mb-6">
+                {Array.isArray(author.bio) ? (
+                  <PortableText value={author.bio} components={portableTextComponents} />
+                ) : (
+                  <p>{author.bio}</p>
+                )}
+              </div>
+            )}
 
             {/* Author Stats */}
             <div className="flex gap-8 mb-6">

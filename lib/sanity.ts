@@ -42,8 +42,8 @@ export function urlFor(source: SanityImageSource) {
 export async function getPosts(preview = false) {
   try {
     const client = getClient(preview)
-    return await client.fetch(`
-      *[_type == "post"] | order(publishedAt desc) {
+    const query = `
+      *[_type == "post"${preview ? "" : " && !(_id in path('drafts.**'))"}] | order(publishedAt desc) {
         _id,
         title,
         slug,
@@ -54,9 +54,12 @@ export async function getPosts(preview = false) {
         author->{name, image, slug},
         categories[]->{title, slug}
       }
-    `)
+    `
+    const posts = await client.fetch(query)
+    console.log(`✅ Fetched ${posts.length} posts from dataset: ${dataset}`)
+    return posts
   } catch (error: any) {
-    console.error("Error fetching posts:", error?.message || error)
+    console.error("❌ Error fetching posts:", error?.message || error)
     if (error?.statusCode === 404 && error?.message?.includes("Dataset not found")) {
       console.error(`❌ Dataset "${dataset}" not found in Sanity project. Please create it or update NEXT_PUBLIC_SANITY_DATASET environment variable.`)
     }
