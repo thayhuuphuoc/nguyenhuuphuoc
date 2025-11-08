@@ -32,13 +32,13 @@ export default function ContactUsPage() {
       const data = await response.json()
 
       if (response.ok) {
-        toast.success("Message sent successfully!")
+        toast.success("Gửi tin nhắn thành công!")
         setFormData({ name: "", email: "", subject: "", message: "" })
       } else {
-        toast.error(data.error || "Failed to send message")
+        toast.error(data.error || "Gửi tin nhắn thất bại")
       }
     } catch (error) {
-      toast.error("An error occurred. Please try again.")
+      toast.error("Đã xảy ra lỗi. Vui lòng thử lại.")
     } finally {
       setIsLoading(false)
     }
@@ -48,22 +48,22 @@ export default function ContactUsPage() {
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Contact Us</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">Liên hệ với chúng tôi</h1>
           <p className="text-muted-foreground text-lg">
-            Have a question or want to get in touch? We'd love to hear from you.
+            Nếu bạn có câu hỏi hoặc muốn liên hệ với chúng tôi? Chúng tôi rất vui được lắng nghe bạn.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6 bg-card rounded-lg p-8 border">
           <div>
             <label htmlFor="name" className="block text-sm font-medium mb-2">
-              Name
+              Tên
             </label>
             <Input
               id="name"
               type="text"
               required
-              placeholder="Your name"
+              placeholder="Tên của bạn"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             />
@@ -77,7 +77,7 @@ export default function ContactUsPage() {
               id="email"
               type="email"
               required
-              placeholder="your@email.com"
+              placeholder="email@example.com"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             />
@@ -85,13 +85,13 @@ export default function ContactUsPage() {
 
           <div>
             <label htmlFor="subject" className="block text-sm font-medium mb-2">
-              Subject
+              Chủ đề
             </label>
             <Input
               id="subject"
               type="text"
               required
-              placeholder="What's this about?"
+              placeholder="Đây là về vấn đề gì?"
               value={formData.subject}
               onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
             />
@@ -99,12 +99,12 @@ export default function ContactUsPage() {
 
           <div>
             <label htmlFor="message" className="block text-sm font-medium mb-2">
-              Message
+              Tin nhắn
             </label>
             <Textarea
               id="message"
               required
-              placeholder="Your message..."
+              placeholder="Tin nhắn của bạn..."
               rows={6}
               value={formData.message}
               onChange={(e) => setFormData({ ...formData, message: e.target.value })}
@@ -112,7 +112,7 @@ export default function ContactUsPage() {
           </div>
 
           <Button type="submit" disabled={isLoading} className="w-full">
-            {isLoading ? "Sending..." : "Send Message"}
+            {isLoading ? "Đang gửi..." : "Gửi tin nhắn"}
           </Button>
         </form>
       </div>
