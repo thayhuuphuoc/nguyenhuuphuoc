@@ -153,25 +153,32 @@ export default async function HomePage() {
       )}
 
       {/* Newsletter Section */}
-      <section className="bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5 rounded-2xl p-8 md:p-12 text-center mb-12 md:mb-16 border border-primary/20">
-        <div className="max-w-2xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">Đăng ký nhận bản tin</h2>
-          <p className="text-muted-foreground mb-8">
-            Đăng ký nhận bản tin để là người đầu tiên biết về các bài viết mới, ưu đãi độc quyền,
-            khuyến mãi đặc biệt và tin tức mới nhất.
-          </p>
-          <form action="/api/subscribe" method="POST" className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-            <input
-              type="email"
-              name="email"
-              placeholder="Nhập địa chỉ email của bạn"
-              required
-              className="flex-1 px-4 py-3 rounded-lg bg-background border border-input focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-            />
-            <Button type="submit" className="rounded-lg">
-              Đăng ký
-            </Button>
-          </form>
+      <section className="bg-muted rounded-lg p-8 md:p-12 mb-12 md:mb-16">
+        <div className="flex flex-col lg:flex-row items-center lg:items-start justify-between gap-8 lg:gap-12">
+          {/* Left Side - Text Content */}
+          <div className="flex-1 text-center lg:text-left">
+            <h2 className="text-2xl md:text-3xl font-bold mb-4">Đăng ký nhận bản tin</h2>
+            <p className="text-muted-foreground text-base md:text-lg">
+              Đăng ký nhận bản tin để là người đầu tiên biết về các bài viết mới, ưu đãi độc quyền,
+              khuyến mãi đặc biệt và tin tức mới nhất.
+            </p>
+          </div>
+
+          {/* Right Side - Email Form */}
+          <div className="flex-shrink-0 w-full lg:w-auto">
+            <form action="/api/subscribe" method="POST" className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+              <input
+                type="email"
+                name="email"
+                placeholder="Nhập địa chỉ email của bạn"
+                required
+                className="flex-1 min-w-[280px] px-4 py-3 rounded-md bg-background border border-input focus:outline-none focus:ring-2 focus:ring-ring"
+              />
+              <Button type="submit" className="whitespace-nowrap">
+                Đăng ký
+              </Button>
+            </form>
+          </div>
         </div>
       </section>
 
