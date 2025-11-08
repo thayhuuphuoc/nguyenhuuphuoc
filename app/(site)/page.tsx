@@ -67,31 +67,30 @@ export default async function HomePage({
       {/* Featured Articles Section - 5 posts with special layout */}
       {featuredPosts.length > 0 && (
         <section className="mb-12 md:mb-16">
-          {/* Top Row - 1 Large + 1 Small */}
-          <div className="grid md:grid-cols-3 gap-6 lg:gap-8 mb-6">
-            {/* Large Post - Takes 2 columns */}
-            <div className="md:col-span-2">
+          {/* Combined grid container to ensure equal row heights */}
+          <div className="grid md:grid-cols-3 gap-6 lg:gap-8" style={{ gridTemplateRows: '1fr 1fr' }}>
+            {/* Top Row - 1 Large + 1 Small */}
+            {/* Large Post - Takes 2 columns, row 1 */}
+            <div className="md:col-span-2 row-start-1 row-end-2 flex min-h-0">
               {topLargePost.length > 0 && (
                 <FeaturedPostCard post={topLargePost[0]} />
               )}
             </div>
             
-            {/* Small Post - Takes 1 column (same width as bottom row cards) */}
-            <div className="md:col-span-1">
+            {/* Small Post - Takes 1 column, row 1 (same width as bottom row cards) */}
+            <div className="md:col-span-1 row-start-1 row-end-2 flex min-h-0">
               {topSmallPost.length > 0 && (
                 <SmallPostCard post={topSmallPost[0]} />
               )}
             </div>
-          </div>
 
-          {/* Bottom Row - 3 Equal Posts */}
-          {bottomRowPosts.length > 0 && (
-            <div className="grid md:grid-cols-3 gap-6">
-              {bottomRowPosts.map((post: any) => (
-                <RecentPostCard key={post._id} post={post} />
-              ))}
-            </div>
-          )}
+            {/* Bottom Row - 3 Equal Posts, row 2 */}
+            {bottomRowPosts.map((post: any, index: number) => (
+              <div key={post._id} className="md:col-span-1 row-start-2 row-end-3 flex min-h-0">
+                <RecentPostCard post={post} />
+              </div>
+            ))}
+          </div>
         </section>
       )}
 
@@ -168,8 +167,8 @@ function FeaturedPostCard({ post }: { post: any }) {
   const imageUrl = post.mainImage ? urlFor(post.mainImage).width(800).height(500).url() : null
 
   return (
-    <Link href={`/blog/${post.slug.current}`} className="group block">
-      <div className="relative w-full aspect-[3/2] rounded-lg overflow-hidden bg-muted">
+    <Link href={`/blog/${post.slug.current}`} className="group block w-full h-full">
+      <div className="relative w-full h-full rounded-lg overflow-hidden bg-muted" style={{ aspectRatio: '3/2' }}>
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -239,7 +238,7 @@ function RecentPostCard({ post }: { post: any }) {
 
   return (
     <Link href={`/blog/${post.slug.current}`} className="group block w-full h-full flex flex-col">
-      <div className="relative w-full flex-1 rounded-lg overflow-hidden bg-muted" style={{ minHeight: '320px' }}>
+      <div className="relative w-full flex-1 rounded-lg overflow-hidden bg-muted" style={{ aspectRatio: '4/3', minHeight: '0' }}>
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -308,7 +307,7 @@ function SmallPostCard({ post }: { post: any }) {
 
   return (
     <Link href={`/blog/${post.slug.current}`} className="group block w-full h-full flex flex-col">
-      <div className="relative w-full flex-1 rounded-lg overflow-hidden bg-muted" style={{ minHeight: '320px' }}>
+      <div className="relative w-full flex-1 rounded-lg overflow-hidden bg-muted" style={{ aspectRatio: '4/3', minHeight: '0' }}>
         {imageUrl ? (
           <Image
             src={imageUrl}
