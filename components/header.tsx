@@ -9,7 +9,7 @@ import { useSession, signOut } from "next-auth/react"
 import { SearchDialog } from "@/components/search-dialog"
 
 export function Header() {
-  const { theme, setTheme } = useTheme()
+  const { theme, setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
@@ -66,6 +66,13 @@ export function Header() {
     { name: "Contact", href: "/contact-us" },
   ]
 
+  const handleThemeToggle = () => {
+    if (!mounted) return
+    const currentTheme = resolvedTheme || theme || "light"
+    const newTheme = currentTheme === "dark" ? "light" : "dark"
+    setTheme(newTheme)
+  }
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <nav className="container mx-auto flex h-16 items-center justify-between px-4">
@@ -107,13 +114,14 @@ export function Header() {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => {
-                const newTheme = theme === "dark" ? "light" : "dark"
-                setTheme(newTheme)
-              }}
+              onClick={handleThemeToggle}
               aria-label="Toggle theme"
             >
-              {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              {resolvedTheme === "dark" || theme === "dark" ? (
+                <Sun className="h-5 w-5" />
+              ) : (
+                <Moon className="h-5 w-5" />
+              )}
               <span className="sr-only">Toggle theme</span>
             </Button>
           )}
@@ -215,4 +223,3 @@ export function Header() {
     </header>
   )
 }
-
