@@ -68,16 +68,16 @@ export default async function HomePage({
       {featuredPosts.length > 0 && (
         <section className="mb-12 md:mb-16">
           {/* Top Row - 1 Large + 1 Small */}
-          <div className="grid md:grid-cols-3 gap-6 lg:gap-8 mb-6" style={{ gridAutoRows: '1fr' }}>
+          <div className="grid md:grid-cols-3 gap-6 lg:gap-8 mb-6" style={{ gridAutoRows: 'minmax(400px, auto)' }}>
             {/* Large Post - Takes 2 columns */}
-            <div className="md:col-span-2 flex">
+            <div className="md:col-span-2 h-full">
               {topLargePost.length > 0 && (
                 <FeaturedPostCard post={topLargePost[0]} />
               )}
             </div>
             
             {/* Small Post - Takes 1 column */}
-            <div className="md:col-span-1 flex">
+            <div className="md:col-span-1 h-full">
               {topSmallPost.length > 0 && (
                 <SmallPostCard post={topSmallPost[0]} />
               )}
@@ -86,7 +86,7 @@ export default async function HomePage({
 
           {/* Bottom Row - 3 Equal Posts */}
           {bottomRowPosts.length > 0 && (
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-3 gap-6" style={{ gridAutoRows: 'minmax(400px, auto)' }}>
               {bottomRowPosts.map((post: any) => (
                 <RecentPostCard key={post._id} post={post} />
               ))}
@@ -169,7 +169,7 @@ function FeaturedPostCard({ post }: { post: any }) {
 
   return (
     <Link href={`/blog/${post.slug.current}`} className="group block w-full h-full">
-      <div className="relative w-full h-full rounded-lg overflow-hidden bg-muted" style={{ minHeight: '450px' }}>
+      <div className="relative w-full h-full rounded-lg overflow-hidden bg-muted" style={{ height: '100%', minHeight: '400px' }}>
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -238,8 +238,8 @@ function RecentPostCard({ post }: { post: any }) {
   const imageUrl = post.mainImage ? urlFor(post.mainImage).width(600).height(400).url() : null
 
   return (
-    <Link href={`/blog/${post.slug.current}`} className="group block">
-      <div className="relative h-64 rounded-lg overflow-hidden bg-muted">
+    <Link href={`/blog/${post.slug.current}`} className="group block w-full h-full flex flex-col">
+      <div className="relative w-full flex-1 rounded-lg overflow-hidden bg-muted" style={{ minHeight: '320px' }}>
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -277,7 +277,7 @@ function RecentPostCard({ post }: { post: any }) {
           </div>
         )}
       </div>
-      <div className="mt-4">
+      <div className="mt-4 flex-shrink-0">
         <h6 className="font-semibold text-base md:text-lg mb-2 group-hover:text-primary transition-colors line-clamp-2">
           {post.title}
         </h6>
@@ -308,7 +308,7 @@ function SmallPostCard({ post }: { post: any }) {
 
   return (
     <Link href={`/blog/${post.slug.current}`} className="group block w-full h-full">
-      <div className="relative w-full h-full rounded-lg overflow-hidden bg-muted" style={{ minHeight: '450px' }}>
+      <div className="relative w-full h-full rounded-lg overflow-hidden bg-muted" style={{ height: '100%', minHeight: '400px' }}>
         {imageUrl ? (
           <Image
             src={imageUrl}
