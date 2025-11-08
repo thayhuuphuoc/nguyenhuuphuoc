@@ -9,8 +9,8 @@ import type { Metadata } from "next"
 import BlogSearch from "@/components/blog-search"
 
 export const metadata: Metadata = {
-  title: "Blog - Nguyen Huu Phuoc",
-  description: "Browse all articles and discover new insights from Nguyen Huu Phuoc",
+  title: "Bài viết - Nguyen Huu Phuoc",
+  description: "Duyệt tất cả các bài viết và khám phá những hiểu biết mới từ Nguyen Huu Phuoc",
 }
 
 async function getData(searchParams: { category?: string; search?: string }) {
@@ -60,8 +60,8 @@ export default async function BlogPage({
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
       {/* Hero Section */}
       <section className="text-center mb-12">
-        <h1 className="text-3xl md:text-4xl font-bold mb-4">Blog Articles</h1>
-        <p className="text-muted-foreground text-lg">Discover insights, stories, and expertise</p>
+        <h1 className="text-3xl md:text-4xl font-bold mb-4">Bài viết nổi bật</h1>
+        <p className="text-muted-foreground text-lg">Khám phá những hiểu biết, câu chuyện và kiến thức chuyên môn</p>
       </section>
 
       {/* Search Bar */}
@@ -82,7 +82,7 @@ export default async function BlogPage({
                 : "bg-muted hover:bg-primary hover:text-primary-foreground"
             }`}
           >
-            All ({posts.length})
+            Tất cả ({posts.length})
           </Link>
           {categories.map((category: any) => (
             <Link
@@ -110,9 +110,9 @@ export default async function BlogPage({
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-muted-foreground text-lg mb-4">No articles found matching your criteria.</p>
+            <p className="text-muted-foreground text-lg mb-4">Không tìm thấy bài viết nào phù hợp với tiêu chí của bạn.</p>
             <Link href="/blog">
-              <Button variant="outline">Clear Filters</Button>
+              <Button variant="outline">Xóa bộ lọc</Button>
             </Link>
           </div>
         )}
@@ -137,7 +137,7 @@ function BlogPostCard({ post }: { post: any }) {
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-            No Image
+            Không có hình ảnh
           </div>
         )}
         {/* Read Time Badge */}
@@ -145,7 +145,7 @@ function BlogPostCard({ post }: { post: any }) {
           <div className="absolute top-3 right-3">
             <span className="bg-background/90 text-foreground px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
               <Clock size={12} />
-              {post.readTime} min Read
+              {post.readTime} phút đọc
             </span>
           </div>
         )}
