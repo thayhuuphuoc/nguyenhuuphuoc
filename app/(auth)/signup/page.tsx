@@ -1,11 +1,11 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { Eye, EyeOff } from "lucide-react"
 import { toast } from "sonner"
 
@@ -29,113 +29,133 @@ export default function SignUpPage() {
       return
     }
 
+    if (formData.password.length < 6) {
+      toast.error("Password must be at least 6 characters")
+      return
+    }
+
     setIsLoading(true)
     
-    // In a real app, you would create the user account here
-    // For demo purposes, we'll just show a success message
-    setTimeout(() => {
+    try {
+      // In a real app, you would create the user account here
+      // For demo purposes, we'll just show a success message
+      await new Promise(resolve => setTimeout(resolve, 1000))
       toast.success("Account created successfully! Please sign in.")
       router.push("/auth/signin")
+    } catch (error) {
+      toast.error("An error occurred. Please try again.")
+    } finally {
       setIsLoading(false)
-    }, 1000)
+    }
   }
 
   return (
     <div className="space-y-8">
       <div className="text-center">
-        <h1 className="text-3xl font-bold text-white mb-2">Create account</h1>
-        <p className="text-gray-400">Join our community of writers and readers</p>
+        <h1 className="text-3xl font-bold mb-2">Create account</h1>
+        <p className="text-muted-foreground">Join our community of writers and readers</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">Full Name</label>
-          <input
+        <div className="space-y-2">
+          <label htmlFor="name" className="block text-sm font-medium">
+            Full Name
+          </label>
+          <Input
+            id="name"
             type="text"
             required
             placeholder="John Doe"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition"
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
-          <input
+        <div className="space-y-2">
+          <label htmlFor="email" className="block text-sm font-medium">
+            Email
+          </label>
+          <Input
+            id="email"
             type="email"
             required
             placeholder="you@example.com"
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition"
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">Password</label>
+        <div className="space-y-2">
+          <label htmlFor="password" className="block text-sm font-medium">
+            Password
+          </label>
           <div className="relative">
-            <input
+            <Input
+              id="password"
               type={showPassword ? "text" : "password"}
               required
               placeholder="••••••••"
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition"
+              className="pr-10"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-300"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
           </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">Confirm Password</label>
+        <div className="space-y-2">
+          <label htmlFor="confirmPassword" className="block text-sm font-medium">
+            Confirm Password
+          </label>
           <div className="relative">
-            <input
+            <Input
+              id="confirmPassword"
               type={showConfirmPassword ? "text" : "password"}
               required
               placeholder="••••••••"
               value={formData.confirmPassword}
               onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition"
+              className="pr-10"
             />
             <button
               type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-300"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
             >
               {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
           </div>
         </div>
 
-        <label className="flex items-center gap-2">
-          <input type="checkbox" required className="w-4 h-4 rounded border-gray-700 bg-gray-800" />
-          <span className="text-sm text-gray-400">
+        <div className="flex items-start gap-2">
+          <input
+            type="checkbox"
+            id="terms"
+            required
+            className="mt-1 w-4 h-4 rounded border-border bg-background"
+          />
+          <label htmlFor="terms" className="text-sm text-muted-foreground">
             I agree to the{" "}
-            <Link href="/terms-and-conditions" className="text-blue-400 hover:text-blue-300">
+            <Link href="/terms-and-conditions" className="text-primary hover:underline">
               Terms & Conditions
             </Link>
-          </span>
-        </label>
+          </label>
+        </div>
 
-        <Button
-          type="submit"
-          disabled={isLoading}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition disabled:opacity-50"
-        >
+        <Button type="submit" disabled={isLoading} className="w-full">
           {isLoading ? "Creating account..." : "Sign Up"}
         </Button>
       </form>
 
-      <p className="text-center text-gray-400">
+      <p className="text-center text-sm text-muted-foreground">
         Already have an account?{" "}
-        <Link href="/auth/signin" className="text-blue-400 hover:text-blue-300 font-semibold">
+        <Link href="/auth/signin" className="text-primary hover:underline font-semibold">
           Sign in
         </Link>
       </p>

@@ -6,16 +6,58 @@ import { Moon, Sun, Search, Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useState, useEffect } from "react"
 import { useSession, signOut } from "next-auth/react"
+import { SearchDialog } from "@/components/search-dialog"
 
 export function Header() {
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [searchData, setSearchData] = useState<{ posts: any[]; authors: any[]; categories: any[] }>({
+    posts: [],
+    authors: [],
+    categories: [],
+  })
   const { data: session } = useSession()
 
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  // Keyboard shortcut for search (Cmd+K / Ctrl+K)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault()
+        setSearchOpen(true)
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [])
+
+  // Load search data when dialog opens
+  useEffect(() => {
+    if (searchOpen && searchData.posts.length === 0) {
+      const loadSearchData = async () => {
+        try {
+          const response = await fetch("/api/search")
+          if (response.ok) {
+            const data = await response.json()
+            setSearchData({
+              posts: data.posts || [],
+              authors: data.authors || [],
+              categories: data.categories || [],
+            })
+          }
+        } catch (error) {
+          console.error("Error loading search data:", error)
+        }
+      }
+      loadSearchData()
+    }
+  }, [searchOpen, searchData.posts.length])
 
   const navigation = [
     { name: "Home", href: "/" },
@@ -50,7 +92,12 @@ export function Header() {
 
         <div className="flex items-center gap-4">
           {/* Search Button */}
-          <Button variant="ghost" size="icon" className="hidden sm:flex">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="hidden sm:flex"
+            onClick={() => setSearchOpen(true)}
+          >
             <Search className="h-5 w-5" />
             <span className="sr-only">Search</span>
           </Button>
@@ -61,11 +108,21 @@ export function Header() {
               variant="ghost"
               size="icon"
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              aria-label="Toggle theme"
             >
               {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
               <span className="sr-only">Toggle theme</span>
             </Button>
           )}
+
+          {/* Search Dialog */}
+          <SearchDialog
+            open={searchOpen}
+            onOpenChange={setSearchOpen}
+            posts={searchData.posts}
+            authors={searchData.authors}
+            categories={searchData.categories}
+          />
 
           {/* Auth Buttons */}
           {session ? (
@@ -115,6 +172,19 @@ export function Header() {
                 {item.name}
               </Link>
             ))}
+            {/* Mobile Search Button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full justify-start"
+              onClick={() => {
+                setSearchOpen(true)
+                setMobileMenuOpen(false)
+              }}
+            >
+              <Search className="mr-2 h-4 w-4" />
+              Search
+            </Button>
             {session ? (
               <div className="pt-3 border-t space-y-2">
                 <p className="text-sm text-muted-foreground">{session.user?.name}</p>
