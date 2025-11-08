@@ -67,28 +67,32 @@ export default async function HomePage({
       {/* Featured Articles Section - 5 posts with special layout */}
       {featuredPosts.length > 0 && (
         <section className="mb-12 md:mb-16">
-          <div className="grid md:grid-cols-3 gap-6 lg:gap-8" style={{ gridTemplateRows: '1fr 1fr' }}>
+          <div className="space-y-6 lg:space-y-8">
             {/* Top Row - 1 Large + 1 Small */}
-            {/* Large Post - Takes 2 columns, row 1 */}
-            <div className="md:col-span-2 flex min-h-0" style={{ gridRow: '1' }}>
-              {topLargePost.length > 0 && (
-                <FeaturedPostCard post={topLargePost[0]} />
-              )}
-            </div>
-            
-            {/* Small Post - Takes 1 column, row 1 (same width as bottom row cards) */}
-            <div className="md:col-span-1 flex min-h-0" style={{ gridRow: '1' }}>
-              {topSmallPost.length > 0 && (
-                <SmallPostCard post={topSmallPost[0]} />
-              )}
+            <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+              {/* Large Post - Takes 2 columns */}
+              <div className="md:col-span-2">
+                {topLargePost.length > 0 && (
+                  <FeaturedPostCard post={topLargePost[0]} />
+                )}
+              </div>
+              
+              {/* Small Post - Takes 1 column (same width as bottom row cards) */}
+              <div className="md:col-span-1">
+                {topSmallPost.length > 0 && (
+                  <SmallPostCard post={topSmallPost[0]} />
+                )}
+              </div>
             </div>
 
-            {/* Bottom Row - 3 Equal Posts, row 2 */}
-            {bottomRowPosts.map((post: any) => (
-              <div key={post._id} className="md:col-span-1 flex min-h-0" style={{ gridRow: '2' }}>
-                <RecentPostCard post={post} />
+            {/* Bottom Row - 3 Equal Posts */}
+            {bottomRowPosts.length > 0 && (
+              <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+                {bottomRowPosts.map((post: any) => (
+                  <RecentPostCard key={post._id} post={post} />
+                ))}
               </div>
-            ))}
+            )}
           </div>
         </section>
       )}
@@ -166,8 +170,8 @@ function FeaturedPostCard({ post }: { post: any }) {
   const imageUrl = post.mainImage ? urlFor(post.mainImage).width(800).height(500).url() : null
 
   return (
-    <Link href={`/blog/${post.slug.current}`} className="group block w-full h-full flex flex-col">
-      <div className="relative w-full flex-1 rounded-lg overflow-hidden bg-muted min-h-0">
+    <Link href={`/blog/${post.slug.current}`} className="group block">
+      <div className="relative w-full aspect-[3/2] rounded-lg overflow-hidden bg-muted">
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -236,8 +240,8 @@ function RecentPostCard({ post }: { post: any }) {
   const imageUrl = post.mainImage ? urlFor(post.mainImage).width(600).height(400).url() : null
 
   return (
-    <Link href={`/blog/${post.slug.current}`} className="group block w-full h-full flex flex-col">
-      <div className="relative w-full flex-1 rounded-lg overflow-hidden bg-muted min-h-0 mb-4">
+    <Link href={`/blog/${post.slug.current}`} className="group block">
+      <div className="relative w-full aspect-[4/3] rounded-lg overflow-hidden bg-muted mb-4">
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -330,8 +334,8 @@ function SmallPostCard({ post }: { post: any }) {
   const imageUrl = post.mainImage ? urlFor(post.mainImage).width(400).height(400).url() : null
 
   return (
-    <Link href={`/blog/${post.slug.current}`} className="group block w-full h-full flex flex-col">
-      <div className="relative w-full flex-1 rounded-lg overflow-hidden bg-muted min-h-0 mb-4">
+    <Link href={`/blog/${post.slug.current}`} className="group block">
+      <div className="relative w-full aspect-[4/3] rounded-lg overflow-hidden bg-muted mb-4">
         {imageUrl ? (
           <Image
             src={imageUrl}
