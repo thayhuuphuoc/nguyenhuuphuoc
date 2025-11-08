@@ -119,7 +119,7 @@ export default async function HomePage({
       )}
 
             {/* Newsletter Section */}
-            <section className="bg-muted rounded-lg p-8 md:p-12 mb-6 md:mb-8">
+            <section className="bg-muted rounded-lg p-8 md:p-12 mb-3 md:mb-4">
         <div className="flex flex-col items-center justify-center text-center max-w-3xl mx-auto">
           {/* Text Content */}
           <div className="mb-8">
