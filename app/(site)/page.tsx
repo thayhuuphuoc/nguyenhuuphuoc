@@ -36,9 +36,9 @@ export default async function HomePage() {
 
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
-      {/* Featured Articles - 2 Large Cards */}
+      {/* Featured Articles - 2 Large Cards (No Hero Section) */}
       {featuredPosts.length > 0 && (
-        <section className="mb-16">
+        <section className="mb-12 md:mb-16">
           <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
             {featuredPosts.map((post: any) => (
               <FeaturedPostCard key={post._id} post={post} />
@@ -49,7 +49,7 @@ export default async function HomePage() {
 
       {/* Recent Articles - 3 Medium Cards */}
       {recentPosts.length > 0 && (
-        <section className="mb-16">
+        <section className="mb-12 md:mb-16">
           <div className="grid md:grid-cols-3 gap-6">
             {recentPosts.map((post: any) => (
               <RecentPostCard key={post._id} post={post} />
@@ -60,7 +60,7 @@ export default async function HomePage() {
 
       {/* Explore Categories Section */}
       {categories.length > 0 && (
-        <section className="mb-16">
+        <section className="mb-12 md:mb-16">
           <div className="text-center mb-8">
             <h1 className="text-3xl md:text-4xl font-bold mb-3">Explore Categories</h1>
             <p className="text-muted-foreground text-lg">
@@ -108,7 +108,7 @@ export default async function HomePage() {
 
       {/* Explore Authors Section */}
       {displayAuthors.length > 0 && (
-        <section className="mb-16">
+        <section className="mb-12 md:mb-16">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl md:text-3xl font-bold">Explore Authors</h2>
             <Link href="/author" className="text-primary hover:underline text-sm font-medium">
@@ -124,7 +124,7 @@ export default async function HomePage() {
       )}
 
       {/* Newsletter Section */}
-      <section className="bg-muted rounded-lg p-8 md:p-12 text-center mb-16">
+      <section className="bg-muted rounded-lg p-8 md:p-12 text-center mb-12 md:mb-16">
         <h2 className="text-2xl md:text-3xl font-bold mb-4">Subscribe to our Newsletter</h2>
         <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
           Subscribe to our newsletter and be the first to know about new arrivals, exclusive offers,
@@ -157,13 +157,13 @@ export default async function HomePage() {
   )
 }
 
-// Featured Post Card - Large
+// Featured Post Card - Large (matches website mẫu)
 function FeaturedPostCard({ post }: { post: any }) {
   const imageUrl = post.mainImage ? urlFor(post.mainImage).width(800).height(500).url() : null
 
   return (
     <Link href={`/blog/${post.slug.current}`} className="group block">
-      <div className="relative h-80 md:h-96 rounded-lg overflow-hidden mb-4 bg-muted">
+      <div className="relative h-80 md:h-96 rounded-lg overflow-hidden bg-muted">
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -177,7 +177,7 @@ function FeaturedPostCard({ post }: { post: any }) {
             No Image
           </div>
         )}
-        {/* Author Overlay */}
+        {/* Author Overlay - Top Left */}
         {post.author && (
           <div className="absolute top-4 left-4 flex items-center gap-2 bg-background/80 backdrop-blur-sm px-3 py-1.5 rounded-full">
             {post.author.image && (
@@ -192,7 +192,7 @@ function FeaturedPostCard({ post }: { post: any }) {
             <span className="text-sm font-medium">{post.author.name}</span>
           </div>
         )}
-        {/* Category Badge */}
+        {/* Category Badge - Top Right */}
         {post.categories?.[0] && (
           <div className="absolute top-4 right-4">
             <span className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold">
@@ -200,23 +200,23 @@ function FeaturedPostCard({ post }: { post: any }) {
             </span>
           </div>
         )}
-        {/* Title Overlay */}
+        {/* Title and Stats Overlay - Bottom */}
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent p-6">
-          <h3 className="text-white font-bold text-xl md:text-2xl mb-3 line-clamp-2">
+          <h4 className="text-white font-bold text-xl md:text-2xl mb-3 line-clamp-2">
             {post.title}
-          </h3>
+          </h4>
           <div className="flex items-center gap-4 text-sm text-white/90">
             <div className="flex items-center gap-1">
-              <Eye size={16} />
+              <Eye size={16} className="text-white/90" />
               <span>213</span>
             </div>
             <div className="flex items-center gap-1">
-              <MessageCircle size={16} />
+              <MessageCircle size={16} className="text-white/90" />
               <span>3</span>
             </div>
             {post.publishedAt && (
               <div className="flex items-center gap-1">
-                <Calendar size={16} />
+                <Calendar size={16} className="text-white/90" />
                 <span>{new Date(post.publishedAt).toLocaleDateString("en-US", { month: "numeric", day: "numeric", year: "numeric" })}</span>
               </div>
             )}
@@ -227,13 +227,13 @@ function FeaturedPostCard({ post }: { post: any }) {
   )
 }
 
-// Recent Post Card - Medium
+// Recent Post Card - Medium (matches website mẫu)
 function RecentPostCard({ post }: { post: any }) {
   const imageUrl = post.mainImage ? urlFor(post.mainImage).width(600).height(400).url() : null
 
   return (
     <Link href={`/blog/${post.slug.current}`} className="group block">
-      <div className="relative h-64 rounded-lg overflow-hidden mb-4 bg-muted">
+      <div className="relative h-64 rounded-lg overflow-hidden bg-muted">
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -247,7 +247,7 @@ function RecentPostCard({ post }: { post: any }) {
             No Image
           </div>
         )}
-        {/* Author Overlay */}
+        {/* Author Overlay - Top Left */}
         {post.author && (
           <div className="absolute top-3 left-3 flex items-center gap-2 bg-background/80 backdrop-blur-sm px-2 py-1 rounded-full">
             {post.author.image && (
@@ -262,7 +262,7 @@ function RecentPostCard({ post }: { post: any }) {
             <span className="text-xs font-medium">{post.author.name}</span>
           </div>
         )}
-        {/* Category Badge */}
+        {/* Category Badge - Top Right */}
         {post.categories?.[0] && (
           <div className="absolute top-3 right-3">
             <span className="bg-primary text-primary-foreground px-2 py-1 rounded-full text-xs font-semibold">
@@ -271,36 +271,38 @@ function RecentPostCard({ post }: { post: any }) {
           </div>
         )}
       </div>
-      <h4 className="font-semibold text-lg mb-2 group-hover:text-primary transition-colors line-clamp-2">
-        {post.title}
-      </h4>
-      <div className="flex items-center gap-4 text-xs text-muted-foreground">
-        <div className="flex items-center gap-1">
-          <Eye size={14} />
-          <span>213</span>
-        </div>
-        <div className="flex items-center gap-1">
-          <MessageCircle size={14} />
-          <span>3</span>
-        </div>
-        {post.publishedAt && (
+      <div className="mt-4">
+        <h6 className="font-semibold text-base md:text-lg mb-2 group-hover:text-primary transition-colors line-clamp-2">
+          {post.title}
+        </h6>
+        <div className="flex items-center gap-4 text-xs text-muted-foreground">
           <div className="flex items-center gap-1">
-            <Calendar size={14} />
-            <span>{new Date(post.publishedAt).toLocaleDateString("en-US", { month: "numeric", day: "numeric", year: "numeric" })}</span>
+            <Eye size={14} />
+            <span>213</span>
           </div>
-        )}
+          <div className="flex items-center gap-1">
+            <MessageCircle size={14} />
+            <span>3</span>
+          </div>
+          {post.publishedAt && (
+            <div className="flex items-center gap-1">
+              <Calendar size={14} />
+              <span>{new Date(post.publishedAt).toLocaleDateString("en-US", { month: "numeric", day: "numeric", year: "numeric" })}</span>
+            </div>
+          )}
+        </div>
       </div>
     </Link>
   )
 }
 
-// Category Post Card - For Grid
+// Category Post Card - For Grid (matches website mẫu)
 function CategoryPostCard({ post }: { post: any }) {
   const imageUrl = post.mainImage ? urlFor(post.mainImage).width(600).height(400).url() : null
 
   return (
     <Link href={`/blog/${post.slug.current}`} className="group block">
-      <div className="relative h-56 rounded-lg overflow-hidden mb-4 bg-muted">
+      <div className="relative h-56 rounded-lg overflow-hidden bg-muted">
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -314,17 +316,16 @@ function CategoryPostCard({ post }: { post: any }) {
             No Image
           </div>
         )}
-        {/* Read Time Badge */}
+        {/* Read Time Badge - Top Right */}
         {post.readTime && (
           <div className="absolute top-3 right-3">
-            <span className="bg-background/90 text-foreground px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
-              <Clock size={12} />
+            <span className="bg-background/90 text-foreground px-2 py-1 rounded-full text-xs font-semibold">
               {post.readTime} min Read
             </span>
           </div>
         )}
       </div>
-      <div className="space-y-2">
+      <div className="mt-4 space-y-2">
         {/* Author */}
         {post.author && (
           <div className="flex items-center gap-2">
@@ -374,7 +375,7 @@ function CategoryPostCard({ post }: { post: any }) {
   )
 }
 
-// Author Card
+// Author Card (matches website mẫu)
 function AuthorCard({ author }: { author: any }) {
   // Helper to extract text from PortableText
   function extractText(content: any): string {

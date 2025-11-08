@@ -247,6 +247,18 @@ Optional database setup:
 
 MIT License - feel free to use this project for personal or commercial use
 
+## Documentation
+
+### Quick Guides
+- 📝 [Hướng Dẫn Thay Đổi Nội Dung Bài Viết](./HUONG-DAN-THAY-DOI-BAI-VIET.md) - Hướng dẫn chi tiết cách quản lý nội dung
+- ⚡ [Quick Start: Edit Posts](./QUICK-START-EDIT-POSTS.md) - Hướng dẫn nhanh
+- 🚀 [Deployment Guide](./DEPLOYMENT.md) - Hướng dẫn deploy
+
+### Troubleshooting
+- 🔧 [Fix Author Bio Error](./HUONG-DAN-FIX-AUTHOR-BIO-ERROR.md)
+- 🔧 [Fix CORS Error](./HUONG-DAN-FIX-CORS-ERROR.md)
+- 🔧 [Fix Studio Error](./HUONG-DAN-FIX-LOI-STUDIO.md)
+
 ## Support
 
 - Documentation: See [DEPLOYMENT.md](./DEPLOYMENT.md)
