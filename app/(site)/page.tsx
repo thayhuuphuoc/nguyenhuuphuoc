@@ -68,16 +68,16 @@ export default async function HomePage({
       {featuredPosts.length > 0 && (
         <section className="mb-12 md:mb-16">
           {/* Top Row - 1 Large + 1 Small */}
-          <div className="grid md:grid-cols-3 gap-6 lg:gap-8 mb-6" style={{ gridAutoRows: 'minmax(400px, auto)' }}>
+          <div className="grid md:grid-cols-3 gap-6 lg:gap-8 mb-6">
             {/* Large Post - Takes 2 columns */}
-            <div className="md:col-span-2 h-full">
+            <div className="md:col-span-2">
               {topLargePost.length > 0 && (
                 <FeaturedPostCard post={topLargePost[0]} />
               )}
             </div>
             
-            {/* Small Post - Takes 1 column */}
-            <div className="md:col-span-1 h-full">
+            {/* Small Post - Takes 1 column (same width as bottom row cards) */}
+            <div className="md:col-span-1">
               {topSmallPost.length > 0 && (
                 <SmallPostCard post={topSmallPost[0]} />
               )}
@@ -86,7 +86,7 @@ export default async function HomePage({
 
           {/* Bottom Row - 3 Equal Posts */}
           {bottomRowPosts.length > 0 && (
-            <div className="grid md:grid-cols-3 gap-6" style={{ gridAutoRows: 'minmax(400px, auto)' }}>
+            <div className="grid md:grid-cols-3 gap-6">
               {bottomRowPosts.map((post: any) => (
                 <RecentPostCard key={post._id} post={post} />
               ))}
@@ -168,8 +168,8 @@ function FeaturedPostCard({ post }: { post: any }) {
   const imageUrl = post.mainImage ? urlFor(post.mainImage).width(800).height(500).url() : null
 
   return (
-    <Link href={`/blog/${post.slug.current}`} className="group block w-full h-full">
-      <div className="relative w-full h-full rounded-lg overflow-hidden bg-muted" style={{ height: '100%', minHeight: '400px' }}>
+    <Link href={`/blog/${post.slug.current}`} className="group block">
+      <div className="relative w-full aspect-[3/2] rounded-lg overflow-hidden bg-muted">
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -302,13 +302,13 @@ function RecentPostCard({ post }: { post: any }) {
   )
 }
 
-// Small Post Card - For sidebar (matches website mẫu)
+// Small Post Card - For sidebar (same width and layout as bottom row cards)
 function SmallPostCard({ post }: { post: any }) {
   const imageUrl = post.mainImage ? urlFor(post.mainImage).width(400).height(400).url() : null
 
   return (
-    <Link href={`/blog/${post.slug.current}`} className="group block w-full h-full">
-      <div className="relative w-full h-full rounded-lg overflow-hidden bg-muted" style={{ height: '100%', minHeight: '400px' }}>
+    <Link href={`/blog/${post.slug.current}`} className="group block w-full h-full flex flex-col">
+      <div className="relative w-full flex-1 rounded-lg overflow-hidden bg-muted" style={{ minHeight: '320px' }}>
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -318,7 +318,7 @@ function SmallPostCard({ post }: { post: any }) {
             sizes="(max-width: 768px) 100vw, 33vw"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">
+          <div className="w-full h-full flex items-center justify-center text-muted-foreground">
             Không có hình ảnh
           </div>
         )}
@@ -345,27 +345,26 @@ function SmallPostCard({ post }: { post: any }) {
             </span>
           </div>
         )}
-        {/* Title and Stats Overlay - Bottom */}
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent p-4">
-          <h6 className="text-white font-bold text-sm md:text-base mb-2 line-clamp-2">
-            {post.title}
-          </h6>
-          <div className="flex items-center gap-3 text-xs text-white/90">
-            <div className="flex items-center gap-1">
-              <Eye size={14} className="text-white/90" />
-              <span>213</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <MessageCircle size={14} className="text-white/90" />
-              <span>3</span>
-            </div>
-            {post.publishedAt && (
-              <div className="flex items-center gap-1">
-                <Calendar size={14} className="text-white/90" />
-                <span>{new Date(post.publishedAt).toLocaleDateString("vi-VN", { month: "numeric", day: "numeric", year: "numeric" })}</span>
-              </div>
-            )}
+      </div>
+      <div className="mt-4 flex-shrink-0">
+        <h6 className="font-semibold text-base md:text-lg mb-2 group-hover:text-primary transition-colors line-clamp-2">
+          {post.title}
+        </h6>
+        <div className="flex items-center gap-4 text-xs text-muted-foreground">
+          <div className="flex items-center gap-1">
+            <Eye size={14} />
+            <span>213</span>
           </div>
+          <div className="flex items-center gap-1">
+            <MessageCircle size={14} />
+            <span>3</span>
+          </div>
+          {post.publishedAt && (
+            <div className="flex items-center gap-1">
+              <Calendar size={14} />
+              <span>{new Date(post.publishedAt).toLocaleDateString("vi-VN", { month: "numeric", day: "numeric", year: "numeric" })}</span>
+            </div>
+          )}
         </div>
       </div>
     </Link>
