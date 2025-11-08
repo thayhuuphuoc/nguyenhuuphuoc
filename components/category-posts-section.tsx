@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useCallback, useRef, useEffect } from "react"
+import { useMemo, useCallback } from "react"
 import { useSearchParams, useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
@@ -13,16 +13,6 @@ interface CategoryPostsSectionProps {
   categories: any[]
 }
 
-// Helper function to shuffle array
-function shuffleArray<T>(array: T[]): T[] {
-  const shuffled = [...array]
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
-  }
-  return shuffled
-}
-
 export function CategoryPostsSection({
   posts,
   categories,
@@ -31,40 +21,38 @@ export function CategoryPostsSection({
   const router = useRouter()
   const pathname = usePathname()
   const selectedCategory = searchParams.get("category") || undefined
-  const randomPostsRef = useRef<any[]>([])
-  const postsLengthRef = useRef<number>(posts.length)
 
-  // Reset cache when posts change
-  useEffect(() => {
-    if (postsLengthRef.current !== posts.length) {
-      randomPostsRef.current = []
-      postsLengthRef.current = posts.length
-    }
-  }, [posts.length])
-
-  // Filter posts by selected category
+  // Filter and sort posts by selected category
   const filteredPosts = useMemo(() => {
+    let filtered: any[] = []
+
     if (!selectedCategory) {
-      // If no category selected, show random 6 posts (excluding first 5 featured posts)
-      // Cache the random posts to prevent re-shuffling on every render
-      if (randomPostsRef.current.length === 0) {
-        const remainingPosts = posts.slice(5)
-        if (remainingPosts.length === 0) {
-          randomPostsRef.current = []
-          return []
-        }
-        randomPostsRef.current = shuffleArray([...remainingPosts]).slice(0, Math.min(6, remainingPosts.length))
-      }
-      return randomPostsRef.current
+      // If no category selected, show 6 latest posts (excluding first 5 featured posts)
+      const remainingPosts = posts.slice(5)
+      // Sort by publishedAt (newest first) and take first 6
+      filtered = remainingPosts
+        .sort((a: any, b: any) => {
+          const dateA = a.publishedAt ? new Date(a.publishedAt).getTime() : 0
+          const dateB = b.publishedAt ? new Date(b.publishedAt).getTime() : 0
+          return dateB - dateA // Descending order (newest first)
+        })
+        .slice(0, 6)
+    } else {
+      // Filter posts by selected category
+      filtered = posts.filter((post: any) =>
+        post.categories?.some((cat: any) => cat.slug?.current === selectedCategory),
+      )
+      // Sort by publishedAt (newest first) and take first 6
+      filtered = filtered
+        .sort((a: any, b: any) => {
+          const dateA = a.publishedAt ? new Date(a.publishedAt).getTime() : 0
+          const dateB = b.publishedAt ? new Date(b.publishedAt).getTime() : 0
+          return dateB - dateA // Descending order (newest first)
+        })
+        .slice(0, 6)
     }
 
-    // Reset random posts cache when category is selected
-    randomPostsRef.current = []
-
-    // Filter posts by selected category
-    return posts.filter((post: any) =>
-      post.categories?.some((cat: any) => cat.slug?.current === selectedCategory),
-    )
+    return filtered
   }, [posts, selectedCategory])
 
   // Handle category filter change
