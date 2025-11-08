@@ -5,30 +5,51 @@ import { draftMode } from "next/headers"
 import type { Metadata } from "next"
 
 // Helper function to extract text from PortableText
+// Always returns a string, never an object
 function extractTextFromPortableText(content: any): string {
+  // Handle null/undefined
   if (!content) return ""
+  
+  // Handle string
   if (typeof content === "string") return content
-  if (!Array.isArray(content)) {
-    // If it's an object (single block), try to extract text
-    if (content && typeof content === "object" && content._type === "block" && content.children) {
-      return content.children.map((child: any) => child?.text || "").join("").trim()
+  
+  // Handle single block object
+  if (content && typeof content === "object" && !Array.isArray(content)) {
+    if (content._type === "block" && Array.isArray(content.children)) {
+      const text = content.children
+        .map((child: any) => (child && typeof child === "object" && child.text) ? String(child.text) : "")
+        .join("")
+        .trim()
+      return text || ""
     }
+    // If it's an object but not a block, return empty string
     return ""
   }
-  try {
-    return content
-      .map((block: any) => {
-        if (block && block._type === "block" && Array.isArray(block.children)) {
-          return block.children.map((child: any) => child?.text || "").join("")
-        }
-        return ""
-      })
-      .join(" ")
-      .trim()
-  } catch (error) {
-    console.error("Error extracting text from PortableText:", error)
-    return ""
+  
+  // Handle array of blocks
+  if (Array.isArray(content)) {
+    try {
+      const text = content
+        .filter((block: any) => block && typeof block === "object" && block._type === "block")
+        .map((block: any) => {
+          if (Array.isArray(block.children)) {
+            return block.children
+              .map((child: any) => (child && typeof child === "object" && child.text) ? String(child.text) : "")
+              .join("")
+          }
+          return ""
+        })
+        .join(" ")
+        .trim()
+      return text || ""
+    } catch (error) {
+      console.error("Error extracting text from PortableText:", error)
+      return ""
+    }
   }
+  
+  // Fallback: return empty string
+  return ""
 }
 
 export const metadata: Metadata = {
@@ -37,7 +58,17 @@ export const metadata: Metadata = {
 }
 
 function AuthorCard({ author }: { author: any }) {
-  const bioText = author.bio ? extractTextFromPortableText(author.bio) : ""
+  // Safely extract bio text - always returns a string
+  let bioText = ""
+  if (author.bio) {
+    try {
+      const extracted = extractTextFromPortableText(author.bio)
+      bioText = typeof extracted === "string" ? extracted : String(extracted || "")
+    } catch (error) {
+      console.error("Error processing author bio:", error)
+      bioText = ""
+    }
+  }
   
   return (
     <Link

@@ -1,7 +1,7 @@
 import { Suspense } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { Eye, MessageCircle, Calendar, Search } from "lucide-react"
+import { Eye, MessageCircle, Calendar, Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { getPosts, getCategories, urlFor } from "@/lib/sanity"
 import { draftMode } from "next/headers"
@@ -37,7 +37,15 @@ async function getData(searchParams: { category?: string; search?: string }) {
     )
   }
 
-  return { posts: filteredPosts, categories }
+  // Count posts per category
+  const categoryCounts = categories.map((cat: any) => {
+    const count = allPosts.filter((post: any) =>
+      post.categories?.some((postCat: any) => postCat.slug?.current === cat.slug?.current)
+    ).length
+    return { ...cat, count }
+  })
+
+  return { posts: filteredPosts, categories: categoryCounts }
 }
 
 export default async function BlogPage({
@@ -48,10 +56,10 @@ export default async function BlogPage({
   const { posts, categories } = await getData(searchParams)
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="container mx-auto px-4 py-8 md:py-12">
       {/* Hero Section */}
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4">Blog Articles</h1>
+        <h1 className="text-3xl md:text-4xl font-bold mb-4">Blog Articles</h1>
         <p className="text-muted-foreground text-lg">Discover insights, stories, and expertise</p>
       </section>
 
@@ -64,28 +72,28 @@ export default async function BlogPage({
 
       {/* Category Filter */}
       {categories.length > 0 && (
-        <div className="flex flex-wrap gap-2 justify-center mb-12">
+        <div className="flex flex-wrap gap-3 justify-center mb-12">
           <Link
             href="/blog"
-            className={`px-4 py-2 rounded-full text-sm transition ${
+            className={`px-4 py-2 rounded-full text-sm font-medium transition ${
               !searchParams.category
                 ? "bg-primary text-primary-foreground"
-                : "bg-muted hover:bg-muted/80"
+                : "bg-muted hover:bg-primary hover:text-primary-foreground"
             }`}
           >
-            All
+            All ({posts.length})
           </Link>
           {categories.map((category: any) => (
             <Link
               key={category._id}
               href={`/blog?category=${category.slug.current}`}
-              className={`px-4 py-2 rounded-full text-sm transition ${
+              className={`px-4 py-2 rounded-full text-sm font-medium transition ${
                 searchParams.category === category.slug.current
                   ? "bg-primary text-primary-foreground"
-                  : "bg-muted hover:bg-muted/80"
+                  : "bg-muted hover:bg-primary hover:text-primary-foreground"
               }`}
             >
-              {category.title}
+              {category.title} ({category.count})
             </Link>
           ))}
         </div>
@@ -94,15 +102,15 @@ export default async function BlogPage({
       {/* Blog Grid */}
       <section>
         {posts.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {posts.map((post: any) => (
               <BlogPostCard key={post._id} post={post} />
             ))}
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-muted-foreground text-lg">No articles found matching your criteria.</p>
-            <Link href="/blog" className="mt-4 inline-block">
+            <p className="text-muted-foreground text-lg mb-4">No articles found matching your criteria.</p>
+            <Link href="/blog">
               <Button variant="outline">Clear Filters</Button>
             </Link>
           </div>
@@ -113,11 +121,11 @@ export default async function BlogPage({
 }
 
 function BlogPostCard({ post }: { post: any }) {
-  const imageUrl = post.mainImage ? urlFor(post.mainImage).width(600).height(300).url() : null
+  const imageUrl = post.mainImage ? urlFor(post.mainImage).width(600).height(400).url() : null
 
   return (
-    <Link href={`/blog/${post.slug.current}`} className="group">
-      <div className="h-64 rounded-lg overflow-hidden mb-4 relative bg-muted">
+    <Link href={`/blog/${post.slug.current}`} className="group block">
+      <div className="relative h-56 rounded-lg overflow-hidden mb-4 bg-muted">
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -131,14 +139,19 @@ function BlogPostCard({ post }: { post: any }) {
             No Image
           </div>
         )}
-        <div className="absolute top-3 right-3">
-          <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
-            {post.categories?.[0]?.title || "Uncategorized"}
-          </span>
-        </div>
+        {/* Read Time Badge */}
+        {post.readTime && (
+          <div className="absolute top-3 right-3">
+            <span className="bg-background/90 text-foreground px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
+              <Clock size={12} />
+              {post.readTime} min Read
+            </span>
+          </div>
+        )}
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2">
+        {/* Author */}
         {post.author && (
           <div className="flex items-center gap-2">
             {post.author.image && (
@@ -154,43 +167,50 @@ function BlogPostCard({ post }: { post: any }) {
           </div>
         )}
 
-        <h3 className="text-lg font-semibold group-hover:text-primary transition-colors line-clamp-2">
-          {post.title}
-        </h3>
+        {/* Category */}
+        {post.categories?.[0] && (
+          <div>
+            <span className="text-xs text-primary font-medium">{post.categories[0].title}</span>
+          </div>
+        )}
 
+        {/* Title */}
+        <h6 className="font-semibold text-base group-hover:text-primary transition-colors line-clamp-2">
+          {post.title}
+        </h6>
+
+        {/* Excerpt */}
         {post.excerpt && (
           <p className="text-sm text-muted-foreground line-clamp-2">{post.excerpt}</p>
         )}
 
+        {/* Stats */}
         <div className="flex items-center justify-between text-xs text-muted-foreground pt-2">
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1">
               <Eye size={14} />
-              <span>Views</span>
+              <span>213</span>
             </div>
             <div className="flex items-center gap-1">
               <MessageCircle size={14} />
-              <span>Comments</span>
+              <span>3</span>
             </div>
           </div>
-          {post.readTime && <span>{post.readTime} min</span>}
-        </div>
-
-        {post.publishedAt && (
-          <div className="text-xs text-muted-foreground">
+          {post.publishedAt && (
             <div className="flex items-center gap-1">
               <Calendar size={14} />
               <span>
                 {new Date(post.publishedAt).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "short",
+                  month: "numeric",
                   day: "numeric",
+                  year: "numeric",
                 })}
               </span>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </Link>
   )
 }
+
