@@ -167,7 +167,7 @@ function FeaturedPostCard({ post }: { post: any }) {
 
   return (
     <Link href={`/blog/${post.slug.current}`} className="group block w-full h-full">
-      <div className="relative w-full h-full rounded-lg overflow-hidden bg-muted" style={{ aspectRatio: '16/9' }}>
+      <div className="relative w-full h-full rounded-lg overflow-hidden bg-muted" style={{ aspectRatio: '2/1' }}>
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -237,7 +237,7 @@ function RecentPostCard({ post }: { post: any }) {
 
   return (
     <Link href={`/blog/${post.slug.current}`} className="group block w-full h-full">
-      <div className="relative w-full h-full rounded-lg overflow-hidden bg-muted" style={{ aspectRatio: '16/9' }}>
+      <div className="relative w-full h-full rounded-lg overflow-hidden bg-muted" style={{ aspectRatio: '2/1' }}>
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -307,7 +307,7 @@ function SmallPostCard({ post }: { post: any }) {
 
   return (
     <Link href={`/blog/${post.slug.current}`} className="group block w-full h-full">
-      <div className="relative w-full h-full rounded-lg overflow-hidden bg-muted" style={{ aspectRatio: '16/9' }}>
+      <div className="relative w-full h-full rounded-lg overflow-hidden bg-muted" style={{ aspectRatio: '2/1' }}>
         {imageUrl ? (
           <Image
             src={imageUrl}
