@@ -60,10 +60,10 @@ export function Header() {
   }, [searchOpen, searchData.posts.length])
 
   const navigation = [
-    { name: "Home", href: "/" },
-    { name: "Blog", href: "/blog" },
-    { name: "Authors", href: "/author" },
-    { name: "Contact", href: "/contact-us" },
+    { name: "Trang chủ", href: "/" },
+    { name: "Bài viết", href: "/blog" },
+    { name: "Tác giả", href: "/author" },
+    { name: "Liên hệ", href: "/contact-us" },
   ]
 
   const handleThemeToggle = () => {

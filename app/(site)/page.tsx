@@ -7,8 +7,18 @@ import { draftMode } from "next/headers"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Home - Nguyen Huu Phuoc",
-  description: "Discover the latest articles and insights from Nguyen Huu Phuoc",
+  title: "Trang chủ - Nguyen Huu Phuoc",
+  description: "Khám phá các bài viết và chia sẻ mới nhất từ Nguyen Huu Phuoc",
+}
+
+// Helper function to shuffle array randomly
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
+  return shuffled
 }
 
 async function getData() {
@@ -21,10 +31,18 @@ async function getData() {
 
 export default async function HomePage() {
   const { posts, categories, authors } = await getData()
-  const featuredPosts = posts.slice(0, 2)
-  const recentPosts = posts.slice(2, 5)
-  // For grid posts, use all remaining posts or all posts if we don't have enough
-  const gridPosts = posts.length > 5 ? posts.slice(5) : posts.slice(2)
+  
+  // Latest posts - 2 featured + 3 recent (total 5 latest posts)
+  const latestPosts = posts.slice(0, 5)
+  const featuredPosts = latestPosts.slice(0, 2)
+  const recentPosts = latestPosts.slice(2, 5)
+  
+  // Random 6 posts for grid (excluding the 5 latest posts)
+  const remainingPosts = posts.slice(5)
+  const randomPosts = remainingPosts.length > 0 
+    ? shuffleArray(remainingPosts).slice(0, 6)
+    : []
+  
   const displayAuthors = authors.slice(0, 3)
 
   // Count posts per category
@@ -37,7 +55,7 @@ export default async function HomePage() {
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-      {/* Featured Articles - 2 Large Cards (No Hero Section) */}
+      {/* Featured Articles - 2 Large Cards (Latest Posts) */}
       {featuredPosts.length > 0 && (
         <section className="mb-12 md:mb-16">
           <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
@@ -48,7 +66,7 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Recent Articles - 3 Medium Cards */}
+      {/* Recent Articles - 3 Medium Cards (Latest Posts) */}
       {recentPosts.length > 0 && (
         <section className="mb-12 md:mb-16">
           <div className="grid md:grid-cols-3 gap-6">
@@ -62,9 +80,9 @@ export default async function HomePage() {
       {/* Explore Categories Section */}
       <section className="mb-12 md:mb-16">
         <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-3">Explore Categories</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-3">Các chuyên mục bài viết</h1>
           <p className="text-muted-foreground text-lg">
-            Choose a category to explore related content -- Find what interests you
+            Chọn một chuyên mục để khám phá nội dung liên quan -- Tìm những gì bạn quan tâm
           </p>
         </div>
 
@@ -75,7 +93,7 @@ export default async function HomePage() {
               href="/blog"
               className="px-4 py-2 rounded-full text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
             >
-              All ({posts.length})
+              Tất cả ({posts.length})
             </Link>
             {categoryCounts.map((category: any) => (
               <Link
@@ -89,23 +107,29 @@ export default async function HomePage() {
           </div>
         )}
 
-        {/* Posts Grid - Always show if we have posts */}
-        {gridPosts.length > 0 ? (
+        {/* Posts Grid - Random 6 posts */}
+        {randomPosts.length > 0 ? (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {gridPosts.map((post: any) => (
+            {randomPosts.map((post: any) => (
+              <CategoryPostCard key={post._id} post={post} />
+            ))}
+          </div>
+        ) : posts.length > 5 ? (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {posts.slice(5, 11).map((post: any) => (
               <CategoryPostCard key={post._id} post={post} />
             ))}
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-muted-foreground">No more posts to display.</p>
+            <p className="text-muted-foreground">Không còn bài viết để hiển thị.</p>
           </div>
         )}
 
         <div className="flex justify-center mt-8">
           <Link href="/blog">
             <Button variant="outline" size="lg" className="rounded-full">
-              View All Blogs
+              Xem tất cả bài viết
             </Button>
           </Link>
         </div>
@@ -115,9 +139,9 @@ export default async function HomePage() {
       {displayAuthors.length > 0 && (
         <section className="mb-12 md:mb-16">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold">Explore Authors</h2>
+            <h2 className="text-2xl md:text-3xl font-bold">Khám phá tác giả</h2>
             <Link href="/author" className="text-primary hover:underline text-sm font-medium">
-              View all Authors
+              Xem tất cả tác giả
             </Link>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
@@ -129,32 +153,36 @@ export default async function HomePage() {
       )}
 
       {/* Newsletter Section */}
-      <section className="bg-muted rounded-lg p-8 md:p-12 text-center mb-12 md:mb-16">
-        <h2 className="text-2xl md:text-3xl font-bold mb-4">Subscribe to our Newsletter</h2>
-        <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-          Subscribe to our newsletter and be the first to know about new arrivals, exclusive offers,
-          special promotions, and the latest news.
-        </p>
-        <form action="/api/subscribe" method="POST" className="flex gap-3 max-w-md mx-auto">
-          <input
-            type="email"
-            name="email"
-            placeholder="Enter your email address"
-            required
-            className="flex-1 px-4 py-2 rounded-md bg-background border border-input focus:outline-none focus:ring-2 focus:ring-ring"
-          />
-          <Button type="submit">Subscribe</Button>
-        </form>
+      <section className="bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5 rounded-2xl p-8 md:p-12 text-center mb-12 md:mb-16 border border-primary/20">
+        <div className="max-w-2xl mx-auto">
+          <h2 className="text-2xl md:text-3xl font-bold mb-4">Đăng ký nhận bản tin</h2>
+          <p className="text-muted-foreground mb-8">
+            Đăng ký nhận bản tin để là người đầu tiên biết về các bài viết mới, ưu đãi độc quyền,
+            khuyến mãi đặc biệt và tin tức mới nhất.
+          </p>
+          <form action="/api/subscribe" method="POST" className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+            <input
+              type="email"
+              name="email"
+              placeholder="Nhập địa chỉ email của bạn"
+              required
+              className="flex-1 px-4 py-3 rounded-lg bg-background border border-input focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+            />
+            <Button type="submit" className="rounded-lg">
+              Đăng ký
+            </Button>
+          </form>
+        </div>
       </section>
 
       {/* Empty State */}
       {posts.length === 0 && (
         <section className="text-center py-16">
           <p className="text-muted-foreground text-lg mb-4">
-            No posts available yet. Check back soon for new content!
+            Chưa có bài viết nào. Vui lòng quay lại sau để xem nội dung mới!
           </p>
           <Link href="/blog">
-            <Button variant="outline">View Blog</Button>
+            <Button variant="outline">Xem bài viết</Button>
           </Link>
         </section>
       )}
@@ -179,7 +207,7 @@ function FeaturedPostCard({ post }: { post: any }) {
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-            No Image
+            Không có hình ảnh
           </div>
         )}
         {/* Author Overlay - Top Left */}
@@ -222,7 +250,7 @@ function FeaturedPostCard({ post }: { post: any }) {
             {post.publishedAt && (
               <div className="flex items-center gap-1">
                 <Calendar size={16} className="text-white/90" />
-                <span>{new Date(post.publishedAt).toLocaleDateString("en-US", { month: "numeric", day: "numeric", year: "numeric" })}</span>
+                <span>{new Date(post.publishedAt).toLocaleDateString("vi-VN", { month: "numeric", day: "numeric", year: "numeric" })}</span>
               </div>
             )}
           </div>
@@ -249,7 +277,7 @@ function RecentPostCard({ post }: { post: any }) {
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-            No Image
+            Không có hình ảnh
           </div>
         )}
         {/* Author Overlay - Top Left */}
@@ -292,7 +320,7 @@ function RecentPostCard({ post }: { post: any }) {
           {post.publishedAt && (
             <div className="flex items-center gap-1">
               <Calendar size={14} />
-              <span>{new Date(post.publishedAt).toLocaleDateString("en-US", { month: "numeric", day: "numeric", year: "numeric" })}</span>
+              <span>{new Date(post.publishedAt).toLocaleDateString("vi-VN", { month: "numeric", day: "numeric", year: "numeric" })}</span>
             </div>
           )}
         </div>
@@ -318,14 +346,14 @@ function CategoryPostCard({ post }: { post: any }) {
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-            No Image
+            Không có hình ảnh
           </div>
         )}
         {/* Read Time Badge - Top Right */}
         {post.readTime && (
           <div className="absolute top-3 right-3">
             <span className="bg-background/90 text-foreground px-2 py-1 rounded-full text-xs font-semibold">
-              {post.readTime} min Read
+              {post.readTime} phút đọc
             </span>
           </div>
         )}
@@ -371,7 +399,7 @@ function CategoryPostCard({ post }: { post: any }) {
           {post.publishedAt && (
             <div className="flex items-center gap-1">
               <Calendar size={14} />
-              <span>{new Date(post.publishedAt).toLocaleDateString("en-US", { month: "numeric", day: "numeric", year: "numeric" })}</span>
+              <span>{new Date(post.publishedAt).toLocaleDateString("vi-VN", { month: "numeric", day: "numeric", year: "numeric" })}</span>
             </div>
           )}
         </div>
