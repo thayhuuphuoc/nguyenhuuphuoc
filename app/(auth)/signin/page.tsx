@@ -31,14 +31,14 @@ export default function SignInPage() {
       })
 
       if (result?.error) {
-        toast.error("Invalid email or password")
+        toast.error("Email hoặc mật khẩu không đúng")
       } else {
-        toast.success("Signed in successfully")
+        toast.success("Đăng nhập thành công")
         router.push("/")
         router.refresh()
       }
     } catch (error) {
-      toast.error("An error occurred. Please try again.")
+      toast.error("Đã xảy ra lỗi. Vui lòng thử lại.")
     } finally {
       setIsLoading(false)
     }
@@ -47,8 +47,8 @@ export default function SignInPage() {
   return (
     <div className="space-y-8">
       <div className="text-center">
-        <h1 className="text-3xl font-bold mb-2">Welcome back</h1>
-        <p className="text-muted-foreground">Sign in to your account to continue</p>
+        <h1 className="text-3xl font-bold mb-2">Chào mừng trở lại</h1>
+        <p className="text-muted-foreground">Đăng nhập vào tài khoản của bạn để tiếp tục</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -60,7 +60,7 @@ export default function SignInPage() {
             id="email"
             type="email"
             required
-            placeholder="you@example.com"
+            placeholder="email@example.com"
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           />
@@ -68,7 +68,7 @@ export default function SignInPage() {
 
         <div className="space-y-2">
           <label htmlFor="password" className="block text-sm font-medium">
-            Password
+            Mật khẩu
           </label>
           <div className="relative">
             <Input
@@ -91,13 +91,13 @@ export default function SignInPage() {
         </div>
 
         <div className="flex justify-end">
-          <Link href="/auth/forgot-password" className="text-sm text-primary hover:underline">
-            Forgot password?
+          <Link href="/forgot-password" className="text-sm text-primary hover:underline">
+            Quên mật khẩu?
           </Link>
         </div>
 
         <Button type="submit" disabled={isLoading} className="w-full">
-          {isLoading ? "Signing in..." : "Sign In"}
+          {isLoading ? "Đang đăng nhập..." : "Đăng nhập"}
         </Button>
       </form>
 
@@ -106,14 +106,14 @@ export default function SignInPage() {
           <div className="w-full border-t border-border"></div>
         </div>
         <div className="relative flex justify-center text-sm">
-          <span className="px-2 bg-background text-muted-foreground">Or</span>
+          <span className="px-2 bg-background text-muted-foreground">Hoặc</span>
         </div>
       </div>
 
       <p className="text-center text-sm text-muted-foreground">
-        Don't have an account?{" "}
-        <Link href="/auth/signup" className="text-primary hover:underline font-semibold">
-          Sign up
+        Chưa có tài khoản?{" "}
+        <Link href="/sign-up" className="text-primary hover:underline font-semibold">
+          Đăng ký
         </Link>
       </p>
     </div>
