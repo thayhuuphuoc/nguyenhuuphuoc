@@ -17,7 +17,6 @@ const ViewCountSchema = new Schema<IViewCount>(
       type: String,
       required: [true, "Please provide a post slug"],
       unique: true,
-      index: true,
     },
     count: {
       type: Number,
@@ -34,8 +33,7 @@ const ViewCountSchema = new Schema<IViewCount>(
   }
 )
 
-// Index for faster queries
-ViewCountSchema.index({ postSlug: 1 })
+// Note: unique: true on postSlug already creates an index automatically
 
 // Prevent re-compilation of models during development
 const ViewCount =

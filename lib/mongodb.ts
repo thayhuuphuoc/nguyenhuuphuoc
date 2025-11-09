@@ -2,15 +2,25 @@ import mongoose from "mongoose"
 
 const MONGODB_URI = process.env.MONGODB_URI
 
+interface MongooseCache {
+  conn: typeof mongoose | null
+  promise: Promise<typeof mongoose | null> | null
+}
+
+declare global {
+  // eslint-disable-next-line no-var
+  var mongoose: MongooseCache | undefined
+}
+
 /**
  * Global is used here to maintain a cached connection across hot reloads
  * in development. This prevents connections growing exponentially
  * during API Route usage.
  */
-let cached = global.mongoose
+let cached: MongooseCache = global.mongoose || { conn: null, promise: null }
 
-if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null }
+if (!global.mongoose) {
+  global.mongoose = cached
 }
 
 async function connectDB() {

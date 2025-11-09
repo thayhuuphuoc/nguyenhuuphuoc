@@ -21,7 +21,6 @@ const CommentSchema = new Schema<IComment>(
     postSlug: {
       type: String,
       required: [true, "Please provide a post slug"],
-      index: true,
     },
     author: {
       id: {
@@ -56,7 +55,7 @@ const CommentSchema = new Schema<IComment>(
   }
 )
 
-// Index for faster queries
+// Index for faster queries (compound index for postSlug and createdAt)
 CommentSchema.index({ postSlug: 1, createdAt: -1 })
 
 // Prevent re-compilation of models during development

@@ -40,6 +40,12 @@ export const authConfig = {
           return null
         }
 
+        // Type guard to ensure email and password are strings
+        if (typeof credentials.email !== "string" || typeof credentials.password !== "string") {
+          console.log("❌ Invalid email or password type")
+          return null
+        }
+
         const emailInput = credentials.email.toLowerCase().trim()
         const passwordInput = credentials.password
 
