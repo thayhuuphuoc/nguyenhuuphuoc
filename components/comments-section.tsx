@@ -166,14 +166,23 @@ export function CommentsSection({ postSlug, onCommentChange }: CommentsSectionPr
       {session?.user ? (
         <form onSubmit={handleSubmit} className="mb-8">
           <div className="space-y-4">
-            <Textarea
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              placeholder="Viết bình luận của bạn..."
-              rows={4}
-              maxLength={1000}
-              className="resize-none"
-            />
+            <div>
+              <label htmlFor="comment" className="sr-only">
+                Bình luận
+              </label>
+              <Textarea
+                id="comment"
+                name="comment"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                placeholder="Viết bình luận của bạn..."
+                rows={4}
+                maxLength={1000}
+                autoComplete="off"
+                className="resize-none"
+                aria-label="Bình luận"
+              />
+            </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">
                 {comment.length}/1000 ký tự

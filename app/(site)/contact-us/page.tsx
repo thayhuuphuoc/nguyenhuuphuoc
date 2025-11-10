@@ -61,7 +61,9 @@ export default function ContactUsPage() {
             </label>
             <Input
               id="name"
+              name="name"
               type="text"
+              autoComplete="name"
               required
               placeholder="Tên của bạn"
               value={formData.name}
@@ -75,7 +77,9 @@ export default function ContactUsPage() {
             </label>
             <Input
               id="email"
+              name="email"
               type="email"
+              autoComplete="email"
               required
               placeholder="email@example.com"
               value={formData.email}
@@ -89,7 +93,9 @@ export default function ContactUsPage() {
             </label>
             <Input
               id="subject"
+              name="subject"
               type="text"
+              autoComplete="off"
               required
               placeholder="Đây là về vấn đề gì?"
               value={formData.subject}
@@ -103,6 +109,8 @@ export default function ContactUsPage() {
             </label>
             <Textarea
               id="message"
+              name="message"
+              autoComplete="off"
               required
               placeholder="Tin nhắn của bạn..."
               rows={6}

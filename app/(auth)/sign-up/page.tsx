@@ -126,6 +126,7 @@ export default function SignUpPage() {
             <button
               type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
             >
               {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -137,6 +138,7 @@ export default function SignUpPage() {
           <input
             type="checkbox"
             id="terms"
+            name="terms"
             required
             className="mt-1 w-4 h-4 rounded border-border bg-background"
           />
