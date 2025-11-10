@@ -16,21 +16,45 @@ export function PostMeta({ postSlug, publishedAt, refreshTrigger }: PostMetaProp
 
   const fetchStats = async () => {
     try {
-      // Fetch view count
-      const viewResponse = await fetch(`/api/posts/${postSlug}/views`)
-      const viewData = await viewResponse.json()
-      if (viewData.success) {
-        setViewCount(viewData.count)
+      setLoading(true)
+      console.log(`[PostMeta] Fetching stats for post: ${postSlug}`)
+      
+      // Fetch view count and comment count in parallel
+      const [viewResponse, commentResponse] = await Promise.all([
+        fetch(`/api/posts/${postSlug}/views`).catch(err => {
+          console.error(`[PostMeta] Error fetching view count:`, err)
+          return null
+        }),
+        fetch(`/api/posts/${postSlug}/comments`).catch(err => {
+          console.error(`[PostMeta] Error fetching comment count:`, err)
+          return null
+        }),
+      ])
+
+      // Handle view count
+      if (viewResponse && viewResponse.ok) {
+        const viewData = await viewResponse.json()
+        console.log(`[PostMeta] View count response:`, viewData)
+        setViewCount(viewData.count ?? 0)
+      } else {
+        console.warn(`[PostMeta] View count fetch failed or returned null`)
+        setViewCount(0)
       }
 
-      // Fetch comment count
-      const commentResponse = await fetch(`/api/posts/${postSlug}/comments`)
-      const commentData = await commentResponse.json()
-      if (commentData.success) {
-        setCommentCount(commentData.count || 0)
+      // Handle comment count
+      if (commentResponse && commentResponse.ok) {
+        const commentData = await commentResponse.json()
+        console.log(`[PostMeta] Comment count response:`, commentData)
+        setCommentCount(commentData.count ?? 0)
+      } else {
+        console.warn(`[PostMeta] Comment count fetch failed or returned null`)
+        setCommentCount(0)
       }
     } catch (error) {
-      console.error("Error fetching stats:", error)
+      console.error("[PostMeta] Error fetching stats:", error)
+      // Set default values on error
+      setViewCount(0)
+      setCommentCount(0)
     } finally {
       setLoading(false)
     }

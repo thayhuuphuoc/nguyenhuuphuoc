@@ -9,23 +9,35 @@ export async function GET(
 ) {
   try {
     const { slug } = await params
+    console.log(`[Views API] GET request for slug: ${slug}`)
 
     // Connect to database
-    await connectDB()
+    const dbConnection = await connectDB()
+    
+    // If database is not connected, return 0
+    if (!dbConnection) {
+      console.warn(`[Views API] ⚠️ MongoDB not connected for slug: ${slug}, returning 0`)
+      return NextResponse.json({
+        success: true,
+        count: 0,
+      })
+    }
 
     // Get view count
     const viewCount = await ViewCount.findOne({ postSlug: slug }).lean()
+    console.log(`[Views API] Found view count for ${slug}:`, viewCount?.count || 0)
 
     return NextResponse.json({
       success: true,
       count: viewCount?.count || 0,
     })
   } catch (error: any) {
-    console.error("Error fetching view count:", error)
-    return NextResponse.json(
-      { success: false, error: error.message || "Failed to fetch view count" },
-      { status: 500 }
-    )
+    console.error(`[Views API] Error fetching view count for slug ${slug}:`, error)
+    // Return 0 instead of error to prevent UI breaking
+    return NextResponse.json({
+      success: true,
+      count: 0,
+    })
   }
 }
 
@@ -38,12 +50,16 @@ export async function POST(
     const { slug } = await params
 
     // Connect to database
-    await connectDB()
-
-    // Get client IP for basic duplicate prevention (can be improved with cookies/session)
-    const clientIP = request.headers.get("x-forwarded-for") || 
-                     request.headers.get("x-real-ip") || 
-                     "unknown"
+    const dbConnection = await connectDB()
+    
+    // If database is not connected, return success but don't increment
+    if (!dbConnection) {
+      console.warn("⚠️ MongoDB not connected, cannot track view count")
+      return NextResponse.json({
+        success: true,
+        count: 0,
+      })
+    }
 
     // Update or create view count
     // Using findOneAndUpdate with upsert for atomic operation
@@ -61,14 +77,15 @@ export async function POST(
 
     return NextResponse.json({
       success: true,
-      count: viewCount.count,
+      count: viewCount?.count || 0,
     })
   } catch (error: any) {
     console.error("Error updating view count:", error)
-    return NextResponse.json(
-      { success: false, error: error.message || "Failed to update view count" },
-      { status: 500 }
-    )
+    // Return success with 0 to prevent UI breaking
+    return NextResponse.json({
+      success: true,
+      count: 0,
+    })
   }
 }
 

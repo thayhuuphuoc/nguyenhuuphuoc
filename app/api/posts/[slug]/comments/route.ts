@@ -11,26 +11,41 @@ export async function GET(
 ) {
   try {
     const { slug } = await params
+    console.log(`[Comments API] GET request for slug: ${slug}`)
 
     // Connect to database
-    await connectDB()
+    const dbConnection = await connectDB()
+    
+    // If database is not connected, return empty array
+    if (!dbConnection) {
+      console.warn(`[Comments API] ⚠️ MongoDB not connected for slug: ${slug}, returning empty comments`)
+      return NextResponse.json({
+        success: true,
+        comments: [],
+        count: 0,
+      })
+    }
 
     // Get comments for this post, sorted by newest first
     const comments = await Comment.find({ postSlug: slug })
       .sort({ createdAt: -1 })
       .lean()
 
+    console.log(`[Comments API] Found ${comments?.length || 0} comments for ${slug}`)
+
     return NextResponse.json({
       success: true,
-      comments,
-      count: comments.length,
+      comments: comments || [],
+      count: comments?.length || 0,
     })
   } catch (error: any) {
-    console.error("Error fetching comments:", error)
-    return NextResponse.json(
-      { success: false, error: error.message || "Failed to fetch comments" },
-      { status: 500 }
-    )
+    console.error(`[Comments API] Error fetching comments for slug ${slug}:`, error)
+    // Return empty array instead of error to prevent UI breaking
+    return NextResponse.json({
+      success: true,
+      comments: [],
+      count: 0,
+    })
   }
 }
 

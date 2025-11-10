@@ -21,16 +21,22 @@ export function ViewTracker({ postSlug }: ViewTrackerProps) {
           return // Already tracked in this session
         }
 
-        await fetch(`/api/posts/${postSlug}/views`, {
+        const response = await fetch(`/api/posts/${postSlug}/views`, {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
         })
 
-        // Mark as tracked in this session
-        if (typeof window !== "undefined") {
-          sessionStorage.setItem(sessionKey, "true")
+        if (response.ok) {
+          // Mark as tracked in this session
+          if (typeof window !== "undefined") {
+            sessionStorage.setItem(sessionKey, "true")
+          }
+          hasTracked.current = true
+        } else {
+          console.warn("Failed to track view, but continuing...")
         }
-
-        hasTracked.current = true
       } catch (error) {
         // Silently fail - don't interrupt user experience
         console.error("Error tracking view:", error)
