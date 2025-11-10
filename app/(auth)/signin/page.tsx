@@ -58,7 +58,9 @@ export default function SignInPage() {
           </label>
           <Input
             id="email"
+            name="email"
             type="email"
+            autoComplete="email"
             required
             placeholder="email@example.com"
             value={formData.email}
@@ -73,7 +75,9 @@ export default function SignInPage() {
           <div className="relative">
             <Input
               id="password"
+              name="password"
               type={showPassword ? "text" : "password"}
+              autoComplete="current-password"
               required
               placeholder="••••••••"
               value={formData.password}
@@ -83,6 +87,7 @@ export default function SignInPage() {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
+              aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}

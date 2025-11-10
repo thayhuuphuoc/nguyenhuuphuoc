@@ -72,9 +72,13 @@ export function SearchDialog({ open, onOpenChange, posts = [], authors = [], cat
   return (
     <CommandDialog open={open} onOpenChange={onOpenChange} title="Search">
       <CommandInput
+        id="search-dialog-input"
+        name="search"
+        autoComplete="off"
         placeholder="Search posts, authors, categories..."
         value={searchQuery}
         onValueChange={setSearchQuery}
+        aria-label="Tìm kiếm bài viết, tác giả, chuyên mục"
       />
       <CommandList>
         {!hasResults && searchQuery && <CommandEmpty>No results found.</CommandEmpty>}

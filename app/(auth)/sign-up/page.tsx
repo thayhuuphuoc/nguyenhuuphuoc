@@ -63,7 +63,9 @@ export default function SignUpPage() {
           </label>
           <Input
             id="name"
+            name="name"
             type="text"
+            autoComplete="name"
             required
             placeholder="John Doe"
             value={formData.name}
@@ -77,7 +79,9 @@ export default function SignUpPage() {
           </label>
           <Input
             id="email"
+            name="email"
             type="email"
+            autoComplete="email"
             required
             placeholder="you@example.com"
             value={formData.email}
@@ -92,7 +96,9 @@ export default function SignUpPage() {
           <div className="relative">
             <Input
               id="password"
+              name="password"
               type={showPassword ? "text" : "password"}
+              autoComplete="new-password"
               required
               placeholder="••••••••"
               value={formData.password}
@@ -102,6 +108,7 @@ export default function SignUpPage() {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
+              aria-label={showPassword ? "Hide password" : "Show password"}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -116,7 +123,9 @@ export default function SignUpPage() {
           <div className="relative">
             <Input
               id="confirmPassword"
+              name="confirmPassword"
               type={showConfirmPassword ? "text" : "password"}
+              autoComplete="new-password"
               required
               placeholder="••••••••"
               value={formData.confirmPassword}

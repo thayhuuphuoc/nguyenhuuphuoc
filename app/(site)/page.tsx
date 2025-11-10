@@ -149,13 +149,21 @@ export default async function HomePage({
 
           {/* Email Form - Centered */}
           <form action="/api/subscribe" method="POST" className="flex flex-col sm:flex-row gap-3 w-full max-w-md">
-            <input
-              type="email"
-              name="email"
-              placeholder="Nhập địa chỉ email của bạn"
-              required
-              className="flex-1 px-4 py-3 rounded-md bg-background border border-input focus:outline-none focus:ring-2 focus:ring-ring"
-            />
+            <div className="flex-1">
+              <label htmlFor="newsletter-email" className="sr-only">
+                Địa chỉ email
+              </label>
+              <input
+                id="newsletter-email"
+                type="email"
+                name="email"
+                autoComplete="email"
+                placeholder="Nhập địa chỉ email của bạn"
+                required
+                aria-label="Địa chỉ email để đăng ký nhận bản tin"
+                className="w-full px-4 py-3 rounded-md bg-background border border-input focus:outline-none focus:ring-2 focus:ring-ring"
+              />
+            </div>
             <Button type="submit" className="whitespace-nowrap">
               Đăng ký
             </Button>

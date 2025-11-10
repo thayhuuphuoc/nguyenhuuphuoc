@@ -62,21 +62,52 @@ function CommandDialog({
 
 function CommandInput({
   className,
+  id: providedId,
+  name: providedName,
+  autoComplete: providedAutoComplete,
+  'aria-label': ariaLabel,
   ...props
-}: React.ComponentProps<typeof CommandPrimitive.Input>) {
+}: React.ComponentProps<typeof CommandPrimitive.Input> & {
+  id?: string
+  name?: string
+  autoComplete?: string
+  'aria-label'?: string
+}) {
+  // Use useId for unique ID if not provided
+  const generatedId = React.useId()
+  const inputId = providedId || `command-input-${generatedId}`
+  const inputName = providedName || 'search'
+  const inputAutoComplete = providedAutoComplete !== undefined ? providedAutoComplete : 'off'
+  const inputAriaLabel = ariaLabel || 'Tìm kiếm'
+  
+  // Extract value and onValueChange to prevent conflicts with CommandPrimitive.Input
+  // But keep other HTML input attributes
+  const { value, onValueChange, placeholder, type, ...restProps } = props as any
+  
   return (
     <div
       data-slot="command-input-wrapper"
       className="flex h-9 items-center gap-2 border-b px-3"
     >
-      <SearchIcon className="size-4 shrink-0 opacity-50" />
+      <SearchIcon className="size-4 shrink-0 opacity-50" aria-hidden="true" />
+      <label htmlFor={inputId} className="sr-only">
+        {inputAriaLabel}
+      </label>
       <CommandPrimitive.Input
+        value={value}
+        onValueChange={onValueChange}
+        placeholder={placeholder}
+        type={type || 'text'}
+        {...restProps}
+        id={inputId}
+        name={inputName}
+        autoComplete={inputAutoComplete}
+        aria-label={inputAriaLabel}
         data-slot="command-input"
         className={cn(
           'placeholder:text-muted-foreground flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden disabled:cursor-not-allowed disabled:opacity-50',
           className,
         )}
-        {...props}
       />
     </div>
   )
