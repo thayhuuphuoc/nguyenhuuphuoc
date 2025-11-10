@@ -24,26 +24,70 @@ export default function SignUpPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
+    console.log("📝 Form submitted", {
+      name: formData.name,
+      email: formData.email,
+      passwordLength: formData.password.length,
+    })
+    
+    // Validation
+    if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
+      console.log("❌ Validation failed: Missing fields")
+      toast.error("Vui lòng điền đầy đủ thông tin")
+      return
+    }
+
     if (formData.password !== formData.confirmPassword) {
-      toast.error("Passwords do not match")
+      console.log("❌ Validation failed: Passwords don't match")
+      toast.error("Mật khẩu không khớp")
       return
     }
 
     if (formData.password.length < 6) {
-      toast.error("Password must be at least 6 characters")
+      console.log("❌ Validation failed: Password too short")
+      toast.error("Mật khẩu phải có ít nhất 6 ký tự")
       return
     }
 
     setIsLoading(true)
     
     try {
-      // In a real app, you would create the user account here
-      // For demo purposes, we'll just show a success message
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      toast.success("Account created successfully! Please sign in.")
-      router.push("/sign-in")
+      console.log("🔄 Sending registration request to /api/auth/register")
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+        }),
+      })
+
+      console.log("📥 Registration response status:", response.status)
+      const data = await response.json()
+      console.log("📥 Registration response data:", data)
+
+      if (response.ok) {
+        console.log("✅ Registration successful!")
+        toast.success("Đăng ký thành công! Vui lòng đăng nhập.")
+        // Reset form
+        setFormData({
+          name: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+        })
+        // Redirect to sign in page
+        router.push("/sign-in")
+      } else {
+        console.error("❌ Registration failed:", data.error)
+        toast.error(data.error || "Đăng ký thất bại. Vui lòng thử lại.")
+      }
     } catch (error) {
-      toast.error("An error occurred. Please try again.")
+      console.error("❌ Registration error:", error)
+      toast.error("Đã xảy ra lỗi. Vui lòng thử lại sau.")
     } finally {
       setIsLoading(false)
     }
@@ -52,14 +96,14 @@ export default function SignUpPage() {
   return (
     <div className="space-y-8">
       <div className="text-center">
-        <h1 className="text-3xl font-bold mb-2">Create account</h1>
-        <p className="text-muted-foreground">Join our community of writers and readers</p>
+        <h1 className="text-3xl font-bold mb-2">Tạo tài khoản</h1>
+        <p className="text-muted-foreground">Tham gia cộng đồng của chúng tôi</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
           <label htmlFor="name" className="block text-sm font-medium">
-            Full Name
+            Họ và tên
           </label>
           <Input
             id="name"
@@ -67,7 +111,7 @@ export default function SignUpPage() {
             type="text"
             autoComplete="name"
             required
-            placeholder="John Doe"
+            placeholder="Nguyễn Văn A"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           />
@@ -83,7 +127,7 @@ export default function SignUpPage() {
             type="email"
             autoComplete="email"
             required
-            placeholder="you@example.com"
+            placeholder="email@example.com"
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           />
@@ -91,7 +135,7 @@ export default function SignUpPage() {
 
         <div className="space-y-2">
           <label htmlFor="password" className="block text-sm font-medium">
-            Password
+            Mật khẩu
           </label>
           <div className="relative">
             <Input
@@ -108,7 +152,7 @@ export default function SignUpPage() {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              aria-label={showPassword ? "Hide password" : "Show password"}
+              aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -118,7 +162,7 @@ export default function SignUpPage() {
 
         <div className="space-y-2">
           <label htmlFor="confirmPassword" className="block text-sm font-medium">
-            Confirm Password
+            Xác nhận mật khẩu
           </label>
           <div className="relative">
             <Input
@@ -135,7 +179,7 @@ export default function SignUpPage() {
             <button
               type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+              aria-label={showConfirmPassword ? "Ẩn mật khẩu xác nhận" : "Hiện mật khẩu xác nhận"}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
             >
               {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -152,22 +196,22 @@ export default function SignUpPage() {
             className="mt-1 w-4 h-4 rounded border-border bg-background"
           />
           <label htmlFor="terms" className="text-sm text-muted-foreground">
-            I agree to the{" "}
+            Tôi đồng ý với{" "}
             <Link href="/terms-and-conditions" className="text-primary hover:underline">
-              Terms & Conditions
+              Điều khoản & Điều kiện
             </Link>
           </label>
         </div>
 
         <Button type="submit" disabled={isLoading} className="w-full">
-          {isLoading ? "Creating account..." : "Sign Up"}
+          {isLoading ? "Đang tạo tài khoản..." : "Đăng ký"}
         </Button>
       </form>
 
       <p className="text-center text-sm text-muted-foreground">
-        Already have an account?{" "}
+        Đã có tài khoản?{" "}
         <Link href="/sign-in" className="text-primary hover:underline font-semibold">
-          Sign in
+          Đăng nhập
         </Link>
       </p>
     </div>

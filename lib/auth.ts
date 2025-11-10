@@ -67,6 +67,7 @@ export const authConfig = {
         if (dbConnection) {
           try {
             console.log("📊 Database connected, searching in database...")
+            console.log("🔍 Searching for user with email:", emailInput)
             
             // Find user in database (select password field explicitly)
             const user = await User.findOne({ email: emailInput })
@@ -74,17 +75,26 @@ export const authConfig = {
             
             if (user) {
               console.log("✅ User found in database:", {
-                id: user._id,
+                id: user._id?.toString(),
                 email: user.email,
+                name: user.name,
                 hasPassword: !!user.password,
+                passwordLength: user.password?.length || 0,
+                passwordStartsWith: user.password?.substring(0, 10) || "N/A",
+                isHashed: user.password?.startsWith("$2") || false,
               })
               
               // Verify password using the model's comparePassword method
+              console.log("🔐 Attempting to compare password...")
+              console.log("🔐 Input password length:", passwordInput.length)
+              console.log("🔐 Stored password hash preview:", user.password?.substring(0, 20) || "N/A")
+              
               const isPasswordValid = await user.comparePassword(passwordInput)
               
               console.log("🔐 Password validation result:", isPasswordValid)
               
               if (isPasswordValid) {
+                console.log("✅ Password is valid, returning user")
                 return {
                   id: user._id?.toString() || "",
                   email: user.email,
@@ -93,23 +103,35 @@ export const authConfig = {
                 }
               } else {
                 console.log("❌ Password mismatch for user in database")
-                console.log("💡 Make sure you're using the correct password")
+                console.log("💡 Troubleshooting:")
+                console.log("   1. Make sure you're using the correct password")
+                console.log("   2. Check if password was hashed correctly during registration")
+                console.log("   3. Verify MongoDB connection is working")
               }
             } else {
-              console.log("❌ User not found in database")
+              console.log("❌ User not found in database with email:", emailInput)
               // List all users in database for debugging
               try {
                 const allUsers = await User.find({}).select("email name").limit(10)
+                console.log("📋 Total users in database:", allUsers.length)
                 console.log("📋 Users in database:", allUsers.map(u => ({ email: u.email, name: u.name })))
                 if (allUsers.length === 0) {
                   console.log("⚠️ No users found in database. Make sure registration was successful.")
+                } else {
+                  console.log("💡 Check if the email you're using matches exactly (case-insensitive)")
+                  console.log("💡 Email being searched:", emailInput)
+                  const matchingUsers = allUsers.filter(u => u.email.toLowerCase() === emailInput.toLowerCase())
+                  if (matchingUsers.length > 0) {
+                    console.log("⚠️ Found users with similar email (case-insensitive):", matchingUsers.map(u => u.email))
+                  }
                 }
-              } catch (err) {
-                console.log("⚠️ Could not list users from database")
+              } catch (err: any) {
+                console.log("⚠️ Could not list users from database:", err?.message)
               }
             }
           } catch (error: any) {
             console.error("❌ Database query error:", error?.message || error)
+            console.error("❌ Error stack:", error?.stack)
           }
         } else {
           // Database not connected, try fallback demo users

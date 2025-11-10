@@ -72,9 +72,13 @@ export async function POST(request: NextRequest) {
       name: userData.name,
       email: userData.email,
       role: userData.role,
+      passwordLength: userData.password.length,
+      passwordPreview: userData.password.substring(0, 3) + "***",
     })
 
+    console.log("💾 Calling User.create()...")
     const user = await User.create(userData)
+    console.log("✅ User.create() completed")
 
     console.log("✅ User created successfully with ID:", user._id?.toString())
 
