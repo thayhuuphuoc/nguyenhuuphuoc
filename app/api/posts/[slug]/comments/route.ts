@@ -9,8 +9,10 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  let slug: string | undefined
   try {
-    const { slug } = await params
+    const paramsResult = await params
+    slug = paramsResult.slug
     console.log(`[Comments API] GET request for slug: ${slug}`)
 
     // Connect to database
@@ -39,7 +41,7 @@ export async function GET(
       count: comments?.length || 0,
     })
   } catch (error: any) {
-    console.error(`[Comments API] Error fetching comments for slug ${slug}:`, error)
+    console.error(`[Comments API] Error fetching comments for slug ${slug || 'unknown'}:`, error)
     // Return empty array instead of error to prevent UI breaking
     return NextResponse.json({
       success: true,
@@ -54,8 +56,10 @@ export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  let slug: string | undefined
   try {
-    const { slug } = await params
+    const paramsResult = await params
+    slug = paramsResult.slug
     const session = await auth()
 
     // Check if user is authenticated
@@ -85,7 +89,16 @@ export async function POST(
     }
 
     // Connect to database
-    await connectDB()
+    const dbConnection = await connectDB()
+    
+    // If database is not connected, return error
+    if (!dbConnection) {
+      console.warn("[Comments API] ⚠️ MongoDB not connected, cannot create comment")
+      return NextResponse.json(
+        { success: false, error: "Database chưa được kết nối. Vui lòng thử lại sau." },
+        { status: 503 }
+      )
+    }
 
     // Get user info
     const user = await User.findById(session.user.id).select("name email").lean()
@@ -117,7 +130,7 @@ export async function POST(
       { status: 201 }
     )
   } catch (error: any) {
-    console.error("Error creating comment:", error)
+    console.error(`[Comments API] Error creating comment for slug ${slug || 'unknown'}:`, error)
     return NextResponse.json(
       { success: false, error: error.message || "Failed to create comment" },
       { status: 500 }

@@ -7,8 +7,10 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  let slug: string | undefined
   try {
-    const { slug } = await params
+    const paramsResult = await params
+    slug = paramsResult.slug
     console.log(`[Views API] GET request for slug: ${slug}`)
 
     // Connect to database
@@ -32,7 +34,7 @@ export async function GET(
       count: viewCount?.count || 0,
     })
   } catch (error: any) {
-    console.error(`[Views API] Error fetching view count for slug ${slug}:`, error)
+    console.error(`[Views API] Error fetching view count for slug ${slug || 'unknown'}:`, error)
     // Return 0 instead of error to prevent UI breaking
     return NextResponse.json({
       success: true,
@@ -46,15 +48,17 @@ export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  let slug: string | undefined
   try {
-    const { slug } = await params
+    const paramsResult = await params
+    slug = paramsResult.slug
 
     // Connect to database
     const dbConnection = await connectDB()
     
     // If database is not connected, return success but don't increment
     if (!dbConnection) {
-      console.warn("⚠️ MongoDB not connected, cannot track view count")
+      console.warn(`[Views API] ⚠️ MongoDB not connected for slug: ${slug || 'unknown'}, cannot track view count`)
       return NextResponse.json({
         success: true,
         count: 0,
@@ -80,7 +84,7 @@ export async function POST(
       count: viewCount?.count || 0,
     })
   } catch (error: any) {
-    console.error("Error updating view count:", error)
+    console.error(`[Views API] Error updating view count for slug ${slug || 'unknown'}:`, error)
     // Return success with 0 to prevent UI breaking
     return NextResponse.json({
       success: true,
