@@ -31,7 +31,7 @@ const nextConfig = {
 			},
 			{
 				protocol: 'https',
-				hostname: 'images.laptrinhnextjs.com',
+				hostname: 'images.nguyenhuuphuoc.com',
 				port: '',
 				pathname: '**',
 			},

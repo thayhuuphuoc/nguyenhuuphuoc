@@ -65,12 +65,12 @@ export default function GioiThieuPage() {
 								<p className="font-semibold text-foreground mb-1">Website:</p>
 								<div className="space-y-1">
 									<Link 
-										href="https://nguyenhuuphuoc.info"
+										href="https://nguyenhuuphuoc.com"
 										target="_blank"
 										rel="noopener noreferrer"
 										className="text-primary hover:underline text-lg block"
 									>
-										nguyenhuuphuoc.info
+										nguyenhuuphuoc.com
 									</Link>
 									<Link 
 										href="https://www.nguyenhuuphuoc.com"

@@ -25,7 +25,7 @@ export default function TermsAndConditionsPage() {
 								<div>
 									<h2 className="font-semibold text-xl mb-4">1. Giới thiệu</h2>
 									<p>
-										Chào mừng bạn đến với website của <strong>Nguyễn Hữu Phước</strong> (sau đây gọi là "chúng tôi", "chúng tôi", "của chúng tôi"). Website này được vận hành tại địa chỉ <strong>nguyenhuuphuoc.info</strong> và các tên miền phụ liên quan.
+										Chào mừng bạn đến với website của <strong>Nguyễn Hữu Phước</strong> (sau đây gọi là "chúng tôi", "chúng tôi", "của chúng tôi"). Website này được vận hành tại địa chỉ <strong>nguyenhuuphuoc.com</strong> và các tên miền phụ liên quan.
 									</p>
 									<p className="mt-4">
 										Bằng cách truy cập và sử dụng website này, bạn đồng ý tuân thủ và bị ràng buộc bởi các Điều khoản & Điều kiện sử dụng sau đây. Nếu bạn không đồng ý với bất kỳ phần nào của các điều khoản này, vui lòng không sử dụng website của chúng tôi.
@@ -36,7 +36,7 @@ export default function TermsAndConditionsPage() {
 									<h2 className="font-semibold text-xl mb-4">2. Định nghĩa</h2>
 									<ul className="space-y-4 list-none">
 										<li>
-											<p><strong>2.1 "Website"</strong> - Chỉ website được vận hành tại nguyenhuuphuoc.info và các tên miền phụ liên quan.</p>
+											<p><strong>2.1 "Website"</strong> - Chỉ website được vận hành tại nguyenhuuphuoc.com và các tên miền phụ liên quan.</p>
 										</li>
 										<li>
 											<p><strong>2.2 "Nội dung"</strong> - Bao gồm tất cả các bài viết, hình ảnh, video, tài liệu, mã nguồn, tài nguyên học tập, và bất kỳ thông tin nào khác được đăng tải trên website.</p>
@@ -82,7 +82,7 @@ export default function TermsAndConditionsPage() {
 										</div>
 										<div>
 											<h3 className="font-semibold mb-2">4.2 Nhãn hiệu</h3>
-											<p>Tên "Nguyễn Hữu Phước", "nguyenhuuphuoc.info", và các logo, nhãn hiệu khác được hiển thị trên website là tài sản của chúng tôi hoặc các bên cấp phép của chúng tôi.</p>
+											<p>Tên "Nguyễn Hữu Phước", "nguyenhuuphuoc.com", và các logo, nhãn hiệu khác được hiển thị trên website là tài sản của chúng tôi hoặc các bên cấp phép của chúng tôi.</p>
 										</div>
 										<div>
 											<h3 className="font-semibold mb-2">4.3 Nội dung của người dùng</h3>
@@ -215,7 +215,7 @@ export default function TermsAndConditionsPage() {
 										<p><strong>Nguyễn Hữu Phước</strong></p>
 										<p>Địa chỉ: Thủ Đức, Thành phố Hồ Chí Minh, Việt Nam</p>
 										<p>Email: {siteMetadata.owner_email}</p>
-										<p>Website: <a href="https://www.nguyenhuuphuoc.info/lien-he" className="text-primary hover:underline">https://www.nguyenhuuphuoc.info/lien-he</a></p>
+										<p>Website: <a href="https://www.nguyenhuuphuoc.com/lien-he" className="text-primary hover:underline">https://www.nguyenhuuphuoc.com/lien-he</a></p>
 										<p>Điện thoại: {siteMetadata.phone}</p>
 									</div>
 								</div>

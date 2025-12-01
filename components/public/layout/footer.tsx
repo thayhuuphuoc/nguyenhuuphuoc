@@ -5,7 +5,7 @@ import Image from "next/image";
 const footerLinks = [
 	{ name: "Điều khoản & Điều kiện", href: "/dieu-khoan-va-dieu-kien" },
 	{ name: "Chính sách", href: "/chinh-sach-bao-mat" },
-	{ name: "Liên hệ", href: "https://www.nguyenhuuphuoc.info/lien-he" },
+	{ name: "Liên hệ", href: "https://www.nguyenhuuphuoc.com/lien-he" },
 	{ name: "Trang 404", href: "/not-found" }
 ];
 

@@ -25,7 +25,7 @@ export default function PrivacyPolicyPage() {
 								<div>
 									<h2 className="font-semibold text-xl mb-4">1. Giới thiệu</h2>
 									<p>
-										<strong>Nguyễn Hữu Phước</strong> ("chúng tôi", "chúng tôi", "của chúng tôi") cam kết bảo vệ quyền riêng tư của bạn. Chính sách Bảo mật này giải thích cách chúng tôi thu thập, sử dụng, lưu trữ, và bảo vệ thông tin cá nhân của bạn khi bạn sử dụng website <strong>nguyenhuuphuoc.info</strong> và các dịch vụ liên quan (sau đây gọi là "Dịch vụ").
+										<strong>Nguyễn Hữu Phước</strong> ("chúng tôi", "chúng tôi", "của chúng tôi") cam kết bảo vệ quyền riêng tư của bạn. Chính sách Bảo mật này giải thích cách chúng tôi thu thập, sử dụng, lưu trữ, và bảo vệ thông tin cá nhân của bạn khi bạn sử dụng website <strong>nguyenhuuphuoc.com</strong> và các dịch vụ liên quan (sau đây gọi là "Dịch vụ").
 									</p>
 									<p className="mt-4">
 										Bằng cách sử dụng Dịch vụ của chúng tôi, bạn đồng ý với việc thu thập và sử dụng thông tin theo Chính sách Bảo mật này. Nếu bạn không đồng ý với chính sách này, vui lòng không sử dụng Dịch vụ của chúng tôi.
@@ -232,7 +232,7 @@ export default function PrivacyPolicyPage() {
 										<p><strong>Nguyễn Hữu Phước</strong></p>
 										<p>Địa chỉ: Thủ Đức, Thành phố Hồ Chí Minh, Việt Nam</p>
 										<p>Email: {siteMetadata.owner_email}</p>
-										<p>Website: <a href="https://www.nguyenhuuphuoc.info/lien-he" className="text-primary hover:underline">https://www.nguyenhuuphuoc.info/lien-he</a></p>
+										<p>Website: <a href="https://www.nguyenhuuphuoc.com/lien-he" className="text-primary hover:underline">https://www.nguyenhuuphuoc.com/lien-he</a></p>
 										<p>Điện thoại: {siteMetadata.phone}</p>
 									</div>
 									<p className="mt-4">Chúng tôi sẽ cố gắng phản hồi các yêu cầu của bạn trong vòng 30 ngày.</p>
