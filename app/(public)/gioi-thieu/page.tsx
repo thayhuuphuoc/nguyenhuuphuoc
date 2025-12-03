@@ -73,14 +73,6 @@ export default function GioiThieuPage() {
 										nguyenhuuphuoc.com
 									</Link>
 									<Link 
-										href="https://www.nguyenhuuphuoc.com"
-										target="_blank"
-										rel="noopener noreferrer"
-										className="text-primary hover:underline text-lg block"
-									>
-										nguyenhuuphuoc.com
-									</Link>
-									<Link 
 										href="https://dientuviet.com"
 										target="_blank"
 										rel="noopener noreferrer"
