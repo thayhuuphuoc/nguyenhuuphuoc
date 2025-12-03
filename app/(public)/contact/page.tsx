@@ -19,8 +19,7 @@ export default function ContactPage() {
 			<div className="container">
 				<div className="flex flex-col gap-7 md:gap-14 pb-10">
 					<div className="flex flex-col lg:flex-row items-start gap-8">
-				<div className="flex flex-col lg:flex-row items-start gap-8">
-					<div className="relative bg-primary rounded-md w-full lg:max-w-sm">
+						<div className="relative bg-primary rounded-md w-full lg:max-w-sm">
 						<Image src={"/images/contact/contact-bg.png"} alt="contact-bg" width={150} height={150} className="absolute right-0 top-0" />
 						<div className="relative z-10 p-7">
 							<div className="flex flex-col gap-4">
