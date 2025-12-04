@@ -7,7 +7,7 @@ import {ArrowLeft, Eye, MessageCircle, Calendar} from "lucide-react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import {CaretRightIcon, HomeIcon} from "@radix-ui/react-icons";
-import {getRandomPublishedPosts} from "@/actions/posts/queries";
+import {getRandomPublishedPosts, getPosts} from "@/actions/posts/queries";
 import RelatedPosts from "@/app/(public)/(blog)/blog/_components/related-posts";
 import RelatedLinks from "@/components/public/shared/related-links";
 import Tags from "@/components/public/shared/tags";
@@ -18,6 +18,9 @@ import { getCommentsByPostId } from "@/actions/comments/queries";
 import ShareButtons from "@/components/public/posts/share-buttons";
 import AdSenseWrapper from "@/components/public/adsense/adsense-wrapper";
 import { adsenseConfig, isAdSlotConfigured } from "@/config/adsense";
+import LatestPostsSidebar from "@/components/public/posts/latest-posts-sidebar";
+import {PostStatus} from ".prisma/client";
+import {formatCategoryName} from "@/lib/utils";
 const PostBody = dynamic(() => import("@/components/public/posts/post-body"), {
 	ssr: false,
 });
@@ -28,6 +31,18 @@ export default async function Post({data}: {
 	const postsPromise = getRandomPublishedPosts(6)
 	const commentsResult = await getCommentsByPostId(data.id);
 	const comments = commentsResult.data || [];
+	
+	// Get 5 latest posts (excluding current post)
+	const latestPostsResult = await getPosts({
+		page: 1,
+		per_page: 5,
+		status: PostStatus.PUBLISHED,
+		sort: "createdAt.desc"
+	});
+	// Filter out current post and take up to 5 posts
+	const latestPosts = latestPostsResult.data
+		.filter(post => post.id !== data.id)
+		.slice(0, 5);
 
 	return (
 		<>
@@ -35,7 +50,7 @@ export default async function Post({data}: {
 			<ViewCounter slug={data.slug} initialViewCount={data.viewCount} />
 			
 		{/*Breadcrumb*/}
-		<div className="container mx-auto max-w-4xl px-5 mb-6 md:mb-8">
+		<div className="container mx-auto max-w-[1400px] px-5 mb-6 md:mb-8">
 			<ul className={'flex flex-wrap gap-3'}>
 				<li>
 					<Link
@@ -59,7 +74,11 @@ export default async function Post({data}: {
 			</ul>
 		</div>
 
-		<article className="container mx-auto max-w-4xl px-5">
+		{/* Main Content with Sidebar */}
+		<div className="container mx-auto max-w-[1400px] px-5">
+			<div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
+				{/* Main Article Content - Left Column */}
+				<article className="flex-1 min-w-0">
 				{/* Title */}
 				<div className="mb-6">
 					<h1 className={'text-xl md:text-3xl font-black leading-tight md:leading-tight text-navyGray dark:text-white'}>
@@ -109,23 +128,13 @@ export default async function Post({data}: {
 						)}
 
 						{/* Category Badge */}
-						{data.categories && data.categories.length > 0 && (() => {
-							const formatCategoryName = (str: string) => {
-								if (!str) return str;
-								return str
-									.toLowerCase()
-									.split(' ')
-									.map(word => word.charAt(0).toUpperCase() + word.slice(1))
-									.join(' ');
-							};
-							return (
-								<div className="absolute top-6 right-6 z-20">
-									<span className="text-xs font-semibold px-3 py-1 bg-primary text-white rounded-md">
-										{formatCategoryName(data.categories[0].name)}
-									</span>
-								</div>
-							);
-						})()}
+						{data.categories && data.categories.length > 0 && (
+							<div className="absolute top-6 right-6 z-20">
+								<span className="text-xs font-semibold px-3 py-1 bg-primary text-white rounded-md">
+									{formatCategoryName(data.categories[0].name)}
+								</span>
+							</div>
+						)}
 
 						{/* Meta Info at Bottom */}
 						<div className="absolute bottom-6 left-6 right-6 text-white z-20">
@@ -197,10 +206,17 @@ export default async function Post({data}: {
 					<RelatedLinks data={parseLinkJson(data.relatedLinks)}/>
 					<Tags data={data}/>
 				</div>
-			</article>
 
-			{/* Comments Section */}
-			<CommentsWrapper initialComments={comments} postId={data.id} />
+				{/* Comments Section */}
+				<CommentsWrapper initialComments={comments} postId={data.id} />
+				</article>
+
+				{/* Sidebar - Right Column - Only visible on desktop */}
+				<div className="hidden lg:block lg:order-2">
+					<LatestPostsSidebar posts={latestPosts} />
+				</div>
+			</div>
+		</div>
 
 			{/* Related Posts Section */}
 			<RelatedPosts postsPromise={postsPromise}/>
