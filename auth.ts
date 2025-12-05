@@ -20,13 +20,20 @@ export const {
   },
   events: {
     async linkAccount({ user }) {
-      await prisma.user.update({
-        where: { id: user.id },
-        data: {
-          emailVerified: new Date(),
-          updatedAt: new Date(),
+      try {
+        await prisma.user.update({
+          where: { id: user.id },
+          data: {
+            emailVerified: new Date(),
+            updatedAt: new Date(),
+          }
+        })
+      } catch (error) {
+        // Log error but don't throw to prevent OAuth flow failure
+        if (process.env.NODE_ENV === 'development') {
+          console.error('[LinkAccount] Error updating user:', error);
         }
-      })
+      }
     }
   },
   callbacks: {
@@ -53,47 +60,80 @@ export const {
       return true;
     },
     async session({ token, session }) {
-      // @ts-ignore
-      session.user = {...session.user, ...token}
+      if (!session.user) return session;
 
-      if (token.sub && session.user) {
+      // Assign ID
+      if (token.sub) {
         session.user.id = token.sub;
       }
 
-      if (token.role && session.user) {
+      // Assign role
+      if (token.role) {
         session.user.role = token.role as UserRole;
       }
 
-      if (session.user) {
-        session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
+      // Assign name with fallback
+      session.user.name = token.name || session.user.name || null;
+
+      // Assign email if provided
+      if (token.email != null) {
+        session.user.email = token.email;
       }
 
-      if (session.user) {
-        session.user.name = token.name || '';
-        if (token.email != null) {
-          session.user.email = token.email;
-        }
+      // Assign image if provided (with type check)
+      if (token.image != null && typeof token.image === 'string') {
+        session.user.image = token.image;
       }
+
+      // Assign emailVerified if provided (with type check)
+      if (token.emailVerified != null && token.emailVerified instanceof Date) {
+        session.user.emailVerified = token.emailVerified;
+      }
+
+      // Assign boolean flags with safe conversion
+      session.user.isTwoFactorEnabled = Boolean(token.isTwoFactorEnabled);
+      session.user.isPasswordSet = Boolean(token.isPasswordSet);
 
       return session;
     },
     async jwt({ token, user, trigger, session }) {
-      if (trigger === "update") {
-        token = {...token, ...session.user}
+      // Handle update trigger with explicit assignment
+      if (trigger === "update" && session.user) {
+        if (session.user.id) token.sub = session.user.id;
+        if (session.user.name) token.name = session.user.name;
+        if (session.user.email) token.email = session.user.email;
+        if (session.user.image) token.image = session.user.image;
+        if (session.user.role) token.role = session.user.role;
+        if (session.user.emailVerified) token.emailVerified = session.user.emailVerified;
+        token.isTwoFactorEnabled = session.user.isTwoFactorEnabled;
+        token.isPasswordSet = session.user.isPasswordSet;
       }
 
       if (!token.sub) return token;
 
-      const existingUser = await getUserById(token.sub);
+      try {
+        const existingUser = await getUserById(token.sub);
 
-      if (!existingUser) return token;
+        if (!existingUser) return token;
 
-      token = {...existingUser}
-      token.isPasswordSet = Boolean(existingUser.password)
+        // Explicit assignment for type safety
+        token.sub = existingUser.id;
+        token.name = existingUser.name;
+        token.email = existingUser.email;
+        token.image = existingUser.image;
+        token.role = existingUser.role;
+        token.emailVerified = existingUser.emailVerified;
+        token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
+        token.isPasswordSet = Boolean(existingUser.password);
 
-      delete token.password
-
-      return token;
+        return token;
+      } catch (error) {
+        // Log error in development, return current token to prevent auth failure
+        if (process.env.NODE_ENV === 'development') {
+          console.error('[JWT Callback] Error fetching user:', error);
+        }
+        return token;
+      }
     },
   },
   adapter: PrismaAdapter(prisma),
